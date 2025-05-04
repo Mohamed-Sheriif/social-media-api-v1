@@ -1,0 +1,5 @@
+node_modules/
+dest/
+logs/
+*.env
+src/api/v1/docs/index.json
