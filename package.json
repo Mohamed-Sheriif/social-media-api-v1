@@ -2,7 +2,11 @@
   "name": "social-media-api-v1",
   "version": "1.0.0",
   "main": "dest/index.js",
+  "prisma": {
+    "schema": "src/prisma/schema.prisma"
+  },
   "scripts": {
+    "migrate": "prisma migrate dev",
     "lint": "eslint 'src/**/*.{ts,tsx}'",
     "lint:fix": "eslint --fix 'src/**/*.{ts,tsx}'",
     "compile": "tsc",

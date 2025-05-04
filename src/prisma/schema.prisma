@@ -6,10 +6,91 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "./prisma"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int       @id @default(autoincrement())
+  username   String    @unique
+  email      String    @unique
+  password   String    @map("password_hash")
+  fullName   String?   @map("full_name")
+  bio        String?
+  avatarUrl  String?   @map("avatar_url")
+  isVerified Boolean?  @default(false) @map("is_verified")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+  Post       Post[]
+  Comment    Comment[]
+  Like       Like[]
+  followers  Follow[]  @relation("Follower")
+  followees  Follow[]  @relation("Followee")
+
+  @@index([username], name: "idx_username")
+  @@index([email], name: "idx_email")
+  @@map("users")
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  content   String?
+  mediaUrl  String[] @map("media_url")
+  isPublic  Boolean? @default(true) @map("is_public")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user    User      @relation(fields: [userId], references: [id])
+  Comment Comment[]
+  Like    Like[]
+
+  @@index([userId], name: "idx_user_id")
+  @@index([createdAt], name: "idx_created_at")
+  @@map("posts")
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  postId    Int      @map("post_id")
+  parentId  Int?     @map("parent_id")
+  content   String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+  post Post @relation(fields: [postId], references: [id])
+
+  @@index([postId], name: "idx_post_id")
+  @@index([parentId], name: "idx_parent_id")
+  @@map("comments")
+}
+
+model Like {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique @map("user_id")
+  postId    Int?     @unique @map("post_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User  @relation(fields: [userId], references: [id])
+  post Post? @relation(fields: [postId], references: [id])
+
+  @@map("likes")
+}
+
+model Follow {
+  followerId Int      @map("follower_id")
+  followeeId Int      @map("followee_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  follower User @relation("Follower", fields: [followerId], references: [id])
+  followee User @relation("Followee", fields: [followeeId], references: [id])
+
+  @@id([followerId, followeeId])
+  @@index([followerId], name: "idx_follower_id")
+  @@index([followeeId], name: "idx_followee_id")
+  @@map("follows")
 }
