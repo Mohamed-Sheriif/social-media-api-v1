@@ -60,6 +60,7 @@ model Comment {
   parentId  Int?     @map("parent_id")
   content   String
   createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   user User @relation(fields: [userId], references: [id])
   post Post @relation(fields: [postId], references: [id])
@@ -74,6 +75,7 @@ model Like {
   userId    Int      @unique @map("user_id")
   postId    Int?     @unique @map("post_id")
   createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   user User  @relation(fields: [userId], references: [id])
   post Post? @relation(fields: [postId], references: [id])
@@ -85,6 +87,7 @@ model Follow {
   followerId Int      @map("follower_id")
   followeeId Int      @map("followee_id")
   createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
 
   follower User @relation("Follower", fields: [followerId], references: [id])
   followee User @relation("Followee", fields: [followeeId], references: [id])
