@@ -10,7 +10,6 @@ import { LoginRequest } from '@/core/validation/user/loginReqest';
 import { validateRequest } from '@/api/v1/middleware/validate';
 import { signToken } from '@/api/v1/helpers/jwt';
 import { authenticate } from '@/api/v1/middleware/authenticate';
-import { RequestWithUser } from '@/api/v1/helpers/types';
 
 export function UserRoute(prisma: PrismaClient): Router {
   const router = Router();
@@ -80,10 +79,10 @@ export function UserRoute(prisma: PrismaClient): Router {
   );
 
   router.get(
-    '/me',
+    '/:id',
     authenticate,
     asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-      const userId = (req as RequestWithUser).user.id;
+      const userId = Number(req.params.id);
 
       const user = await userUseCase.getUserById(userId);
       if (!user) {
@@ -95,6 +94,24 @@ export function UserRoute(prisma: PrismaClient): Router {
       res.status(200).json({
         message: 'User retrieved successfully',
         user: userWithoutPassword,
+      });
+    })
+  );
+
+  router.get(
+    '/',
+    authenticate,
+    asyncHandler(async (_req: Request, res: Response, _next: NextFunction) => {
+      const users = await userUseCase.getAllUsers();
+
+      const usersWithoutPassword = users.map(user => {
+        const { password: _, ...userWithoutPassword } = user;
+        return userWithoutPassword;
+      });
+
+      res.status(200).json({
+        message: 'Users retrieved successfully',
+        users: usersWithoutPassword,
       });
     })
   );

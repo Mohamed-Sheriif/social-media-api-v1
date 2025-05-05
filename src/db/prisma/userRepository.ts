@@ -40,4 +40,10 @@ export class UserRepository implements IUserRepository {
 
     return user;
   }
+
+  async getAllUsers(): Promise<User[]> {
+    const users = await this.prisma.user.findMany();
+
+    return users;
+  }
 }

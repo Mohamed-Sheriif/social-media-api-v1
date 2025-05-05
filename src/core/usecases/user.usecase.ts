@@ -26,4 +26,9 @@ export class UserUseCase {
     const user = await this.userRepository.getUserById(id);
     return user;
   }
+
+  async getAllUsers(): Promise<User[]> {
+    const users = await this.userRepository.getAllUsers();
+    return users;
+  }
 }
