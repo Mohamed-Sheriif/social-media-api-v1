@@ -1,0 +1,4 @@
+# User IPI
+/user/register:
+  post:
+    $ref: './user/user-register.yaml'

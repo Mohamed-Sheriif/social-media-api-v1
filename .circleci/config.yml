@@ -1,0 +1,47 @@
+version: 2.1
+
+jobs:
+  deploy_main:
+    docker:
+      - image: cimg/node:20.0
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "brSBp/U8faod0XW/2u2Sw8xlkdXQpZSVCXIKxnP6jr8"
+      - run:
+          name: Deploy to main branch
+          command: |
+            ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} 'bash /home/alaa/snap/api/snap_main.sh'
+      - run:
+          name: Check Node.js version
+          command: node -v
+
+  deploy_qa:
+    docker:
+      - image: cimg/node:20.0
+    steps:
+      - checkout
+      - run: node --version
+
+      - add_ssh_keys:
+          fingerprints:
+            - "brSBp/U8faod0XW/2u2Sw8xlkdXQpZSVCXIKxnP6jr8"
+      - run:
+          name: Deploy to qa branch
+          command: |
+            ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} 'bash /home/alaa/snap/api/snap_qa.sh'
+workflows:
+  version: 2
+  deploy:
+    jobs:
+      - deploy_main:
+          filters:
+            branches:
+              only:
+                - main
+      - deploy_qa:
+          filters:
+            branches:
+              only:
+                - QA

@@ -1,12 +1,15 @@
-//import fs from 'fs';
+import fs from 'fs';
 
 import express, { Application } from 'express';
-//import swaggerUi from 'swagger-ui-express';
+import swaggerUi from 'swagger-ui-express';
 
 import { ApiError } from '@/core/base/apiError';
 import { errorHandler } from '@/api/v1/middleware/errorHandler';
 import { logRequests } from '@/api/v1/middleware/logRequests';
 import Prisma from './config/prisma';
+
+// Imported Routes
+import { UserRoute } from '@/api/v1/routes/user.router';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -14,21 +17,22 @@ dotenv.config();
 export const app: Application = express();
 
 // Swagger UI setup
-// const swaggerFile = `${process.cwd()}/src/api/v1/docs/index.json`;
-// const swaggerData = fs.readFileSync(swaggerFile, 'utf8');
-// const swaggerJSON = JSON.parse(swaggerData);
+const swaggerFile = `${process.cwd()}/src/api/v1/docs/index.json`;
+const swaggerData = fs.readFileSync(swaggerFile, 'utf8');
+const swaggerJSON = JSON.parse(swaggerData);
 
 // Middleware
 app.use(logRequests);
 app.use(express.json());
 
 // Routes
-//app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerJSON));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerJSON));
+app.use('/api/v1/user', UserRoute(Prisma));
 
 // Not Found Route
-app.all('*', (req, _res, next) => {
-  next(new ApiError(`Can't find ${req.originalUrl} on this server!`, 404));
-});
+// app.all('*', (req, _res, next) => {
+//   next(new ApiError(`Can't find ${req.originalUrl} on this server!`, 404));
+// });
 
 // Glopal error handler middleware for express
 app.use(errorHandler);
