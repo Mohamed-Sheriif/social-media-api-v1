@@ -2,7 +2,6 @@ import { User } from '@/core/entitys/user.entity';
 import {
   IsString,
   IsNotEmpty,
-  IsOptional,
   Matches,
   IsEmail,
   MinLength,
@@ -10,13 +9,15 @@ import {
 } from 'class-validator';
 
 export class CreateUserRequest extends User {
-  @IsString()
-  @IsNotEmpty()
+  @IsString({ message: 'Username must be a string' })
+  @IsNotEmpty({ message: 'Username is required' })
+  @MinLength(3, { message: 'Username must be at least 3 characters long' })
+  @MaxLength(20, { message: 'Username must not exceed 20 characters' })
   @Matches(/^\S+$/, { message: 'Username cannot contain spaces' })
   override username: string;
 
-  @IsString()
-  @IsNotEmpty()
+  @IsString({ message: 'Email must be a string' })
+  @IsNotEmpty({ message: 'Email is required' })
   @IsEmail({}, { message: 'Email must be a valid email address' })
   override email: string;
 
@@ -33,20 +34,4 @@ export class CreateUserRequest extends User {
     message: 'Password must contain at least one special character',
   })
   override password: string;
-
-  @IsString()
-  @IsOptional()
-  override fullName: string | null;
-
-  @IsString()
-  @IsOptional()
-  override bio: string | null;
-
-  @IsString()
-  @IsOptional()
-  override avatarUrl: string | null;
-
-  @IsString()
-  @IsOptional()
-  override isVerified: boolean;
 }

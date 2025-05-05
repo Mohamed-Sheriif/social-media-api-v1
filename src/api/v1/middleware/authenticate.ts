@@ -21,7 +21,8 @@ export const authenticate = asyncHandler(
     // extend the request object with the user object
     (req as RequestWithUser).user = {
       id: decoded.id,
-      userName: decoded.userName,
+      username: decoded.userName,
+      email: decoded.email,
     };
 
     next();

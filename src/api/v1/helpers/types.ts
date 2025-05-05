@@ -3,11 +3,12 @@ import { Request } from 'express';
 export interface payloadData {
   id: number;
   userName: string;
-  type: string;
+  email: string;
 }
 export interface RequestWithUser extends Request {
   user: {
     id: number;
-    userName: string;
+    username: string;
+    email: string;
   };
 }

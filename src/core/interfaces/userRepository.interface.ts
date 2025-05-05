@@ -8,4 +8,6 @@ export interface IUserRepository {
   ): Promise<number>;
 
   getUserByEmail(email: string): Promise<User | null>;
+
+  getUserById(id: number): Promise<User | null>;
 }
