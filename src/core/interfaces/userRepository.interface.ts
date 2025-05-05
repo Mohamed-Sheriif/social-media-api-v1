@@ -12,4 +12,13 @@ export interface IUserRepository {
   getUserById(id: number): Promise<User | null>;
 
   getAllUsers(): Promise<User[]>;
+
+  updateUser(
+    id: number,
+    fullName: string,
+    bio: string,
+    avatarUrl: string
+  ): Promise<void>;
+
+  updateUserPassword(id: number, newPassword: string): Promise<void>;
 }

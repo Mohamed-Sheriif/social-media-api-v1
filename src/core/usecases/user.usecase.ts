@@ -31,4 +31,17 @@ export class UserUseCase {
     const users = await this.userRepository.getAllUsers();
     return users;
   }
+
+  async updateUser(
+    id: number,
+    fullName: string,
+    bio: string,
+    avatarUrl: string
+  ): Promise<void> {
+    await this.userRepository.updateUser(id, fullName, bio, avatarUrl);
+  }
+
+  async updateUserPassword(id: number, newPassword: string): Promise<void> {
+    await this.userRepository.updateUserPassword(id, newPassword);
+  }
 }
