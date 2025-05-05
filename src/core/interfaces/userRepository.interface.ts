@@ -21,4 +21,6 @@ export interface IUserRepository {
   ): Promise<void>;
 
   updateUserPassword(id: number, newPassword: string): Promise<void>;
+
+  deleteUser(id: number): Promise<void>;
 }

@@ -44,4 +44,8 @@ export class UserUseCase {
   async updateUserPassword(id: number, newPassword: string): Promise<void> {
     await this.userRepository.updateUserPassword(id, newPassword);
   }
+
+  async deleteUser(id: number): Promise<void> {
+    await this.userRepository.deleteUser(id);
+  }
 }

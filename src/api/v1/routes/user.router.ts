@@ -18,6 +18,7 @@ export function UserRoute(prisma: PrismaClient): Router {
 
   const userUseCase = new UserUseCase(new UserRepository(prisma));
 
+  // User Registration
   router.post(
     '/register',
     validateRequest(CreateUserRequest),
@@ -47,6 +48,7 @@ export function UserRoute(prisma: PrismaClient): Router {
     })
   );
 
+  // User Login
   router.get(
     '/login',
     validateRequest(LoginRequest),
@@ -85,6 +87,7 @@ export function UserRoute(prisma: PrismaClient): Router {
     })
   );
 
+  // Get User by ID
   router.get(
     '/:id',
     authenticate,
@@ -106,6 +109,7 @@ export function UserRoute(prisma: PrismaClient): Router {
     })
   );
 
+  // Get All Users
   router.get(
     '/',
     authenticate,
@@ -124,6 +128,7 @@ export function UserRoute(prisma: PrismaClient): Router {
     })
   );
 
+  // Update User
   router.put(
     '/:id',
     authenticate,
@@ -178,6 +183,28 @@ export function UserRoute(prisma: PrismaClient): Router {
 
       res.status(204).json({
         message: 'User password updated successfully',
+      });
+    })
+  );
+
+  // Delete User
+  router.delete(
+    '/:id',
+    authenticate,
+    asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+      const userId = Number(req.params.id);
+
+      // Check if the user exists
+      const user = await userUseCase.getUserById(userId);
+      if (!user) {
+        return next(new ApiError('User not found', 404));
+      }
+
+      // Delete the user
+      await userUseCase.deleteUser(userId);
+
+      res.status(204).json({
+        message: 'User deleted successfully',
       });
     })
   );
