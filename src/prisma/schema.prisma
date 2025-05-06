@@ -14,21 +14,24 @@ datasource db {
 }
 
 model User {
-  id         Int       @id @default(autoincrement())
-  username   String    @unique
-  email      String    @unique
-  password   String    @map("password_hash")
-  fullName   String?   @map("full_name")
-  bio        String?
-  avatarUrl  String?   @map("avatar_url")
-  isVerified Boolean?  @default(false) @map("is_verified")
-  createdAt  DateTime  @default(now()) @map("created_at")
-  updatedAt  DateTime  @updatedAt @map("updated_at")
-  Post       Post[]
-  Comment    Comment[]
-  Like       Like[]
-  followers  Follow[]  @relation("Follower")
-  followees  Follow[]  @relation("Followee")
+  id                    Int       @id @default(autoincrement())
+  username              String    @unique
+  email                 String    @unique
+  password              String    @map("password_hash")
+  fullName              String?   @map("full_name")
+  bio                   String?
+  avatarUrl             String?   @map("avatar_url")
+  isVerified            Boolean?  @default(false) @map("is_verified")
+  passwordResetCode     String?   @map("password_reset_code")
+  passwordResetExpires  DateTime? @map("password_reset_code_expiry")
+  passwordResetVerified Boolean?  @map("password_reset_verified")
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
+  Post                  Post[]
+  Comment               Comment[]
+  Like                  Like[]
+  followers             Follow[]  @relation("Follower")
+  followees             Follow[]  @relation("Followee")
 
   @@index([username], name: "idx_username")
   @@index([email], name: "idx_email")
