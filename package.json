@@ -11,6 +11,7 @@
     "lint:fix": "eslint --fix 'src/**/*.{ts,tsx}'",
     "compile": "tsc",
     "start": "node dest/index.js",
+    "prebuild": "swagger-cli bundle src/api/v1/docs/index.yaml --outfile src/api/v1/docs/index.json",
     "start:dev": "concurrently \"npx tsc -w\" \"tsc-alias -w\" \"nodemon dist/\""
   },
   "keywords": [],
@@ -37,6 +38,7 @@
     "@types/express": "^5.0.1",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.15.3",
+    "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
     "nodemon": "^3.1.10",
     "prisma": "^6.7.0",
