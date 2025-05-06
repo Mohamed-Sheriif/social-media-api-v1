@@ -23,4 +23,13 @@ export interface IUserRepository {
   updateUserPassword(id: number, newPassword: string): Promise<void>;
 
   deleteUser(id: number): Promise<void>;
+
+  updateUserResetTokenInfo(
+    id: number,
+    hashedResetToken: string | null,
+    passwordResetExpires: Date | null,
+    passwordResetVerified: boolean | null
+  ): Promise<void>;
+
+  getUserByResetCode(hashedResetToken: string): Promise<User | null>;
 }

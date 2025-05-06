@@ -7,6 +7,9 @@ export class User {
   bio: string | null;
   avatarUrl: string | null;
   isVerified: boolean | null;
+  passwordResetCode: string | null;
+  passwordResetExpires: Date | null;
+  passwordResetVerified: boolean | null;
   createdAt: Date;
   updatedAt: Date;
 }

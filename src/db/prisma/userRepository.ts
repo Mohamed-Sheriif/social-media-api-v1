@@ -77,4 +77,28 @@ export class UserRepository implements IUserRepository {
       where: { id },
     });
   }
+
+  async updateUserResetTokenInfo(
+    id: number,
+    hashedResetToken: string | null,
+    passwordResetExpires: Date | null,
+    passwordResetVerified: boolean | null
+  ): Promise<void> {
+    await this.prisma.user.update({
+      where: { id },
+      data: {
+        passwordResetCode: hashedResetToken,
+        passwordResetExpires,
+        passwordResetVerified,
+      },
+    });
+  }
+
+  async getUserByResetCode(hashedResetToken: string): Promise<User | null> {
+    const user = await this.prisma.user.findFirst({
+      where: { passwordResetCode: hashedResetToken },
+    });
+
+    return user;
+  }
 }

@@ -48,4 +48,22 @@ export class UserUseCase {
   async deleteUser(id: number): Promise<void> {
     await this.userRepository.deleteUser(id);
   }
+
+  async updateUserResetTokenInfo(
+    id: number,
+    hashedResetToken: string | null,
+    passwordResetExpires: Date | null,
+    passwordResetVerified: boolean | null
+  ): Promise<void> {
+    await this.userRepository.updateUserResetTokenInfo(
+      id,
+      hashedResetToken,
+      passwordResetExpires,
+      passwordResetVerified
+    );
+  }
+
+  getUserByResetCode(hashedResetToken: string): Promise<User | null> {
+    return this.userRepository.getUserByResetCode(hashedResetToken);
+  }
 }
