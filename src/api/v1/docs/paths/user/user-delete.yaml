@@ -1,0 +1,33 @@
+tags:
+  - User API
+summary: Get user by ID
+description: Retrieve user information by their unique ID.
+parameters:
+  - name: id
+    in: path
+    required: true
+    description: The unique identifier of the user.
+    schema:
+      type: string
+      example: '1'
+responses:
+  '204':
+    description: User retrieved successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 'User deleted successfully'
+  '400':
+    description: Bad Request
+  '401':
+    description: Authorization failed
+  '404':
+    description: User not found
+  '500':
+    description: Internal Server Error
+security:
+  - bearerAuth: []

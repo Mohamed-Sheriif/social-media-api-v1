@@ -31,5 +31,5 @@ export interface IUserRepository {
     passwordResetVerified: boolean | null
   ): Promise<void>;
 
-  getUserByResetCode(hashedResetToken: string): Promise<User | null>;
+  getUserByResetToken(hashedResetToken: string): Promise<User | null>;
 }

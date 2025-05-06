@@ -2,3 +2,28 @@
 /user/register:
   post:
     $ref: './user/user-register.yaml'
+/user/login:
+  post:
+    $ref: './user/user-login.yaml'
+/user/forgot-password:
+  post:
+    $ref: './user/user-forgot-password.yaml'
+/user/verify-reset-token:
+  post:
+    $ref: './user/user-verify-token.yaml'
+/user/reset-password:
+  post:
+    $ref: './user/user-reset-password.yaml'
+/user/{id}:
+  get:
+    $ref: './user/user-get.yaml'
+  put:
+    $ref: './user/user-update.yaml'
+  delete:
+    $ref: './user/user-delete.yaml'
+/user:
+  get:
+    $ref: './user/user-getAll.yaml'
+/user/{id}/password:
+  put:
+    $ref: './user/user-update-password.yaml'

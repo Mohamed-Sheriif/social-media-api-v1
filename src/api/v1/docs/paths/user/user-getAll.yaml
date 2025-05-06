@@ -1,0 +1,52 @@
+tags:
+  - User API
+summary: Get all users
+description: Retrieve a list of all users.
+responses:
+  '200':
+    description: User retrieved successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 'Users retrieved successfully'
+            users:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: '1234567890abcdef'
+                  username:
+                    type: string
+                    example: 'user123'
+                  email:
+                    type: string
+                    example: 'mohamedsh2782@gmail.com'
+                  fullName:
+                    type: string
+                    example: 'Mohamed Sh'
+                  bio:
+                    type: string
+                    example: 'This is my bio'
+                  avatar:
+                    type: string
+                    example: 'https://example.com/avatar.jpg'
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: '2023-10-01T12:00:00Z'
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    example: '2023-10-01T12:00:00Z'
+  '401':
+    description: Authorization failed
+  '500':
+    description: Internal Server Error
+security:
+  - bearerAuth: []

@@ -94,7 +94,7 @@ export class UserRepository implements IUserRepository {
     });
   }
 
-  async getUserByResetCode(hashedResetToken: string): Promise<User | null> {
+  async getUserByResetToken(hashedResetToken: string): Promise<User | null> {
     const user = await this.prisma.user.findFirst({
       where: { passwordResetCode: hashedResetToken },
     });

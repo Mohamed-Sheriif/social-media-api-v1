@@ -14,8 +14,6 @@ paths:
   $ref: ./paths/index.yaml
 components:
   $ref: ./components/index.yaml
-  securitySchemes:
-    bearerAuth: # arbitrary name for the security scheme
-      type: http
-      scheme: bearer
-      bearerFormat: JWT # optional, arbitrary value for documentation purposes
+
+security:
+  - bearerAuth: []

@@ -1,0 +1,48 @@
+tags:
+  - User API
+summary: Update user info
+description: Update user info
+parameters:
+  - name: id
+    in: path
+    required: true
+    description: User ID
+    schema:
+      type: string
+      example: '1'
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          fullName:
+            type: string
+            example: 'Mohamed Ali'
+          bio:
+            type: string
+            example: 'I am a software engineer'
+          avatar:
+            type: string
+            example: 'https://example.com/avatar.jpg'
+responses:
+  '204':
+    description: Success
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 'User updated successfully'
+  '400':
+    description: Bad Request
+  '401':
+    description: Authentication failed
+  '404':
+    description: User not found
+  '500':
+    description: Error sending email
+security:
+  - bearerAuth: []

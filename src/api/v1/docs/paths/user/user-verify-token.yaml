@@ -1,0 +1,31 @@
+tags:
+  - User API
+summary: Verify User Token
+description: Verify User Token
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          resetToken:
+            type: string
+            example: '123456'
+        required:
+          - resetToken
+responses:
+  '200':
+    description: Success
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 'Reset token is valid'
+  '400':
+    description: Invalid token or reset token expired
+  '500':
+    description: Error sending email

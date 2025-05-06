@@ -63,7 +63,7 @@ export class UserUseCase {
     );
   }
 
-  getUserByResetCode(hashedResetToken: string): Promise<User | null> {
-    return this.userRepository.getUserByResetCode(hashedResetToken);
+  getUserByResetToken(hashedResetToken: string): Promise<User | null> {
+    return this.userRepository.getUserByResetToken(hashedResetToken);
   }
 }

@@ -63,7 +63,7 @@ export function UserRoute(prisma: PrismaClient): Router {
    * @route   POST /api/v1/user/login
    * @access  Public
    */
-  router.get(
+  router.post(
     '/login',
     validateRequest(LoginRequest),
     asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -92,10 +92,18 @@ export function UserRoute(prisma: PrismaClient): Router {
         return next(new ApiError('JWT_SECRET is not set', 500));
       }
 
-      const { password: _, ...userWithoutPassword } = user;
       res.status(200).json({
         message: 'Login successful',
-        user: userWithoutPassword,
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          fullName: user.fullName,
+          bio: user.bio,
+          avatarUrl: user.avatarUrl,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+        },
         token,
       });
     })
@@ -136,7 +144,7 @@ export function UserRoute(prisma: PrismaClient): Router {
       );
 
       // 4) Send the reset token to the user's email
-      const message = `Hi ${user.username},\nwe received a request to reset your password on Social Media account. \nYour password reset code is: ${resetToken}.`;
+      const message = `Hi ${user.username},\nwe received a request to reset your password on Social Media account. \nYour password reset token is: ${resetToken}.`;
       try {
         await sendEmail(user.email, 'Password Reset Token', message);
 
@@ -160,15 +168,15 @@ export function UserRoute(prisma: PrismaClient): Router {
     '/verify-reset-token',
     validateRequest(ForgetPasswordRequest),
     asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-      const { resetCode } = req.body;
+      const { resetToken } = req.body;
 
       const hashedResetToken = crypto
         .createHash('sha256')
-        .update(resetCode)
+        .update(resetToken)
         .digest('hex');
 
       // 1) Check if the reset token is valid
-      const user = await userUseCase.getUserByResetCode(hashedResetToken);
+      const user = await userUseCase.getUserByResetToken(hashedResetToken);
       if (!user) {
         return next(new ApiError('Invalid reset token', 400));
       }
@@ -210,14 +218,14 @@ export function UserRoute(prisma: PrismaClient): Router {
     '/reset-password',
     validateRequest(ResetPasswordRequest),
     asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-      const { resetCode, newPassword } = req.body;
+      const { resetToken, newPassword } = req.body;
 
       const hashedResetToken = crypto
         .createHash('sha256')
-        .update(resetCode)
+        .update(resetToken)
         .digest('hex');
       // 1) Check if the reset token is valid
-      const user = await userUseCase.getUserByResetCode(hashedResetToken);
+      const user = await userUseCase.getUserByResetToken(hashedResetToken);
       if (!user) {
         return next(new ApiError('Invalid reset token', 400));
       }
@@ -267,11 +275,18 @@ export function UserRoute(prisma: PrismaClient): Router {
         return next(new ApiError('User not found', 404));
       }
 
-      const { password: _, ...userWithoutPassword } = user;
-
       res.status(200).json({
         message: 'User retrieved successfully',
-        user: userWithoutPassword,
+        user: {
+          id: user.id,
+          username: user.username,
+          fullName: user.fullName,
+          email: user.email,
+          bio: user.bio,
+          avatarUrl: user.avatarUrl,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+        },
       });
     })
   );
@@ -287,14 +302,22 @@ export function UserRoute(prisma: PrismaClient): Router {
     asyncHandler(async (_req: Request, res: Response, _next: NextFunction) => {
       const users = await userUseCase.getAllUsers();
 
-      const usersWithoutPassword = users.map(user => {
-        const { password: _, ...userWithoutPassword } = user;
-        return userWithoutPassword;
+      const userData = users.map(user => {
+        return {
+          id: user.id,
+          username: user.username,
+          fullName: user.fullName,
+          email: user.email,
+          bio: user.bio,
+          avatarUrl: user.avatarUrl,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+        };
       });
 
       res.status(200).json({
         message: 'Users retrieved successfully',
-        users: usersWithoutPassword,
+        users: userData,
       });
     })
   );

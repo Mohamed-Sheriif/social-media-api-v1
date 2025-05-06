@@ -11,7 +11,7 @@
     "lint:fix": "eslint --fix 'src/**/*.{ts,tsx}'",
     "compile": "tsc",
     "start": "node dest/index.js",
-    "prebuild": "swagger-cli bundle src/api/v1/docs/index.yaml --outfile src/api/v1/docs/index.json",
+    "prestart:dev": "swagger-cli bundle src/api/v1/docs/index.yaml --outfile src/api/v1/docs/index.json",
     "start:dev": "concurrently \"npx tsc -w\" \"tsc-alias -w\" \"nodemon dist/\""
   },
   "keywords": [],

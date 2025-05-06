@@ -1,0 +1,70 @@
+tags:
+  - User API
+summary: Login a user
+description: Login a new user
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          email:
+            type: string
+            example: 'mohamedsh2782@gmail.com'
+          password:
+            type: string
+            description: User password (at least 6 characters long and accept letters, numbers, and special characters)
+            example: 'Moh123#'
+        required:
+          - email
+          - password
+responses:
+  '201':
+    description: User created successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 'User created successfully'
+            user:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: '1234567890abcdef'
+                username:
+                  type: string
+                  example: 'user123'
+                email:
+                  type: string
+                  example: 'mohamedsh2782@gmail.com'
+                fullName:
+                  type: string
+                  example: 'Mohamed Sh'
+                bio:
+                  type: string
+                  example: 'This is my bio'
+                avatar:
+                  type: string
+                  example: 'https://example.com/avatar.jpg'
+                createdAt:
+                  type: string
+                  format: date-time
+                  example: '2023-10-01T12:00:00Z'
+                updatedAt:
+                  type: string
+                  format: date-time
+                  example: '2023-10-01T12:00:00Z'
+            token:
+              type: string
+              example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
+  '400':
+    description: Bad Request
+  '409':
+    description: Username or email already exists
+  '500':
+    description: Internal Server Error
