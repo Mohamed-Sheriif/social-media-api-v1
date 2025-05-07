@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 
 import bcrypt from 'bcrypt';
+import passport from 'passport';
 import { Router, Request, Response, NextFunction } from 'express';
 import { PrismaClient } from '@prisma/client';
 import asyncHandler from 'express-async-handler';
@@ -54,6 +55,67 @@ export function UserRoute(prisma: PrismaClient): Router {
       res.status(201).json({
         message: 'User created successfully',
         userId,
+      });
+    })
+  );
+
+  /**
+   * @desc    Login user with passport
+   * @route   POST /api/v1/user/google
+   * @access  Public
+   */
+  router.get(
+    '/google',
+    passport.authenticate('google', { scope: ['profile', 'email'] })
+  );
+
+  /**
+   * @desc    Google auth callback
+   * @route   GET /api/v1/user/google/callback
+   * @access  Public
+   */
+  router.get(
+    '/google/callback',
+    passport.authenticate('google', { failureRedirect: '/login' }),
+    asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+      // Successful authentication
+      const user = req.user as any; // Cast to any to access properties
+
+      // Check if the user already exists in the database , if not create a new user
+      let existingUser = await userUseCase.getUserByEmail(user.email);
+      let userId = user.id;
+      if (!existingUser) {
+        const hashedPassword = await bcrypt.hash(user.id, 10);
+        userId = await userUseCase.createUser(
+          user.username,
+          user.email,
+          hashedPassword
+        );
+      }
+
+      // Sign token
+      const token = signToken({
+        id: userId,
+        userName: user.username,
+        email: user.email,
+      });
+      if (token === '') {
+        return next(new ApiError('JWT_SECRET is not set', 500));
+      }
+
+      res.status(200).json({
+        message: 'Login successful',
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          fullName: user.fullName,
+          bio: user.bio,
+          avatarUrl: user.avatarUrl,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+        },
+        token,
       });
     })
   );

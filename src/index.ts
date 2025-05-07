@@ -2,11 +2,14 @@ import fs from 'fs';
 
 import express, { Application } from 'express';
 import swaggerUi from 'swagger-ui-express';
+import passport from 'passport';
+import session from 'express-session';
 
 import { ApiError } from '@/core/base/apiError';
 import { errorHandler } from '@/api/v1/middleware/errorHandler';
 import { logRequests } from '@/api/v1/middleware/logRequests';
 import Prisma from './config/prisma';
+import '@/config/googleAuth';
 
 // Imported Routes
 import { UserRoute } from '@/api/v1/routes/user.router';
@@ -24,6 +27,15 @@ const swaggerJSON = JSON.parse(swaggerData);
 // Middleware
 app.use(logRequests);
 app.use(express.json());
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET as string,
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Routes
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerJSON));
