@@ -1,0 +1,7 @@
+tags:
+  - User API
+summary: Login with Google
+description: Redirects the user to Google OAuth 2.0 login page.
+responses:
+  '302':
+    description: Redirect to Google OAuth consent screen

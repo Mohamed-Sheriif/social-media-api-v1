@@ -1,0 +1,43 @@
+tags:
+  - User API
+summary: Google OAuth callback
+description: Callback after Google authentication. Returns JWT token and user info.
+responses:
+  '200':
+    description: Successful login
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Login successful
+            user:
+              type: object
+              properties:
+                id:
+                  type: string
+                username:
+                  type: string
+                email:
+                  type: string
+                fullName:
+                  type: string
+                bio:
+                  type: string
+                avatarUrl:
+                  type: string
+                createdAt:
+                  type: string
+                  format: date-time
+                updatedAt:
+                  type: string
+                  format: date-time
+            token:
+              type: string
+              example: jwt.token.here
+  '401':
+    description: Authentication failed
+  '500':
+    description: Server erro

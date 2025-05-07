@@ -27,3 +27,9 @@
 /user/{id}/password:
   put:
     $ref: './user/user-update-password.yaml'
+/user/google:
+  get:
+    $ref: './user/user-google.yaml'
+/user/google/callback:
+  get:
+    $ref: './user/user-google-callback.yaml'
