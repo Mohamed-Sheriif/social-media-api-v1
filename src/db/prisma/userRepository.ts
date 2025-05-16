@@ -19,6 +19,8 @@ export class UserRepository implements IUserRepository {
         bio: null,
         avatarUrl: null,
         isVerified: null,
+        twoFAEnabled: false,
+        twoFASecret: null,
       },
     });
 

@@ -2,15 +2,13 @@ import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-export const signToken = (payload: object): string => {
+export const signToken = (payload: object, signOptions: object): string => {
   // check if jwt secret is set
   if (!JWT_SECRET) {
     return '';
   }
 
-  return jwt.sign(payload, JWT_SECRET, {
-    expiresIn: '1h',
-  });
+  return jwt.sign(payload, JWT_SECRET, signOptions);
 };
 
 export const verifyToken = (token: string): object | null => {

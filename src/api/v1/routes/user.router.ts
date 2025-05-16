@@ -6,8 +6,10 @@ import { Router, Request, Response, NextFunction } from 'express';
 import { PrismaClient } from '@prisma/client';
 import asyncHandler from 'express-async-handler';
 
+import { payloadData } from '@/api/v1/helpers/types';
 import { sendEmail } from '@/helpers/sendEmail';
 import { ApiError } from '@/core/base/apiError';
+import { verifyToken } from '@/api/v1/helpers/jwt';
 import { UserUseCase } from '@/core/usecases/user.usecase';
 import { UserRepository } from '@/db/prisma/userRepository';
 import { CreateUserRequest } from '@/core/validation/user/CreateUserRequest';
@@ -19,11 +21,16 @@ import { UpdateUserRequest } from '@/core/validation/user/updateUserRequest';
 import { UpdateUserPasswordRequest } from '@/core/validation/user/UpdateUserPasswordRequest';
 import { ForgetPasswordRequest } from '@/core/validation/user/ForgetPasswordRequest';
 import { ResetPasswordRequest } from '@/core/validation/user/ResetPasswordRequest';
+import { UserRefreshTokenUseCase } from '@/core/usecases/userRefreshToken.usecase';
+import { UserRefreshTokenRepository } from '@/db/prisma/userRefreshTokenRepository';
 
 export function UserRoute(prisma: PrismaClient): Router {
   const router = Router();
 
   const userUseCase = new UserUseCase(new UserRepository(prisma));
+  const userRefreshTokenUseCase = new UserRefreshTokenUseCase(
+    new UserRefreshTokenRepository(prisma)
+  );
 
   /**
    * @desc    Signup user
@@ -94,11 +101,16 @@ export function UserRoute(prisma: PrismaClient): Router {
       }
 
       // Sign token
-      const token = signToken({
-        id: userId,
-        userName: user.username,
-        email: user.email,
-      });
+      const token = signToken(
+        {
+          id: userId,
+          userName: user.username,
+          email: user.email,
+        },
+        {
+          expiresIn: '1h',
+        }
+      );
       if (token === '') {
         return next(new ApiError('JWT_SECRET is not set', 500));
       }
@@ -144,11 +156,16 @@ export function UserRoute(prisma: PrismaClient): Router {
       }
 
       // Sign token
-      const token = signToken({
-        id: user.id,
-        userName: user.username,
-        email: user.email,
-      });
+      const token = signToken(
+        {
+          id: user.id,
+          userName: user.username,
+          email: user.email,
+        },
+        {
+          expiresIn: '1h',
+        }
+      );
 
       if (token === '') {
         return next(new ApiError('JWT_SECRET is not set', 500));
@@ -304,11 +321,16 @@ export function UserRoute(prisma: PrismaClient): Router {
       await userUseCase.updateUserResetTokenInfo(user.id, null, null, null);
 
       // 5) Sign token
-      const token = signToken({
-        id: user.id,
-        userName: user.username,
-        email: user.email,
-      });
+      const token = signToken(
+        {
+          id: user.id,
+          userName: user.username,
+          email: user.email,
+        },
+        {
+          expiresIn: '1h',
+        }
+      );
 
       if (token === '') {
         return next(new ApiError('JWT_SECRET is not set', 500));
@@ -316,6 +338,76 @@ export function UserRoute(prisma: PrismaClient): Router {
 
       res.status(200).json({
         message: 'Password reset successfully',
+      });
+    })
+  );
+
+  /**
+   * @desc    Refresh token
+   * @route   POST /api/v1/user/refresh-token
+   * @access  Public
+   */
+  router.post(
+    '/refresh-token',
+    asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+      const { refreshToken } = req.body;
+
+      // Verify the refresh token
+      const decoded: payloadData = verifyToken(refreshToken) as payloadData;
+      if (!decoded) {
+        return next(new ApiError('Invalid refresh token', 401));
+      }
+
+      // Get userRefreshToken from the database
+      const userRefreshToken =
+        await userRefreshTokenUseCase.getUserRefreshTokenByUserId(
+          decoded.id,
+          refreshToken
+        );
+
+      // Check if the refresh token exists
+      if (!userRefreshToken) {
+        return next(new ApiError('Refresh token invalid', 401));
+      }
+
+      // Remove the old refresh token
+      await userRefreshTokenUseCase.deleteUserRefreshToken(
+        userRefreshToken.userId
+      );
+
+      // Sign a new refresh token and access token
+      const accessToken = signToken(
+        {
+          id: decoded.id,
+          userName: decoded.userName,
+          email: decoded.email,
+        },
+        {
+          expiresIn: '1h',
+        }
+      );
+
+      const newRefreshToken = signToken(
+        {
+          id: decoded.id,
+          userName: decoded.userName,
+          email: decoded.email,
+        },
+        {
+          expiresIn: '1w',
+        }
+      );
+
+      // Insert the new refresh token into the database
+      await userRefreshTokenUseCase.createUserRefreshToken(
+        decoded.id,
+        newRefreshToken
+      );
+
+      res.status(200).json({
+        message: 'Refresh token generated successfully',
+        accessToken,
+        refreshToken: newRefreshToken,
       });
     })
   );
