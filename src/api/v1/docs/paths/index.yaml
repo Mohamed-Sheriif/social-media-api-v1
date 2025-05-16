@@ -33,3 +33,6 @@
 /user/google/callback:
   get:
     $ref: './user/user-google-callback.yaml'
+/user/refresh-token:
+  post:
+    $ref: './user/user-refreshToken.yaml'
