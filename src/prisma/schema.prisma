@@ -14,28 +14,57 @@ datasource db {
 }
 
 model User {
-  id                    Int       @id @default(autoincrement())
-  username              String    @unique
-  email                 String    @unique
-  password              String    @map("password_hash")
-  fullName              String?   @map("full_name")
+  id                    Int                @id @default(autoincrement())
+  username              String             @unique
+  email                 String             @unique
+  password              String             @map("password_hash")
+  fullName              String?            @map("full_name")
   bio                   String?
-  avatarUrl             String?   @map("avatar_url")
-  isVerified            Boolean?  @default(false) @map("is_verified")
-  passwordResetCode     String?   @map("password_reset_code")
-  passwordResetExpires  DateTime? @map("password_reset_code_expiry")
-  passwordResetVerified Boolean?  @map("password_reset_verified")
-  createdAt             DateTime  @default(now()) @map("created_at")
-  updatedAt             DateTime  @updatedAt @map("updated_at")
+  avatarUrl             String?            @map("avatar_url")
+  isVerified            Boolean?           @default(false) @map("is_verified")
+  passwordResetCode     String?            @map("password_reset_code")
+  passwordResetExpires  DateTime?          @map("password_reset_code_expiry")
+  passwordResetVerified Boolean?           @map("password_reset_verified")
+  twoFAEnabled          Boolean?           @default(false) @map("two_fa_enabled")
+  twoFASecret           String?            @map("two_fa_secret")
+  createdAt             DateTime           @default(now()) @map("created_at")
+  updatedAt             DateTime           @updatedAt @map("updated_at")
   Post                  Post[]
   Comment               Comment[]
   Like                  Like[]
-  followers             Follow[]  @relation("Follower")
-  followees             Follow[]  @relation("Followee")
+  followers             Follow[]           @relation("Follower")
+  followees             Follow[]           @relation("Followee")
+  userRefreshToken      userRefreshToken[]
+  userInvalidTokens     userInvalidToken[]
 
   @@index([username], name: "idx_username")
   @@index([email], name: "idx_email")
   @@map("users")
+}
+
+model userRefreshToken {
+  userId       Int      @map("user_id")
+  refreshToken String
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@id([userId, refreshToken])
+  @@map("user_refresh_tokens")
+}
+
+model userInvalidToken {
+  userId         Int      @map("user_id")
+  accessToken    String
+  expirationTime DateTime @map("expiration_time")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@id([userId, accessToken])
+  @@map("user_invalid_tokens")
 }
 
 model Post {
