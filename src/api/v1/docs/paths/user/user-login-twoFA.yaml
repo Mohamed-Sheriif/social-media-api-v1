@@ -1,7 +1,7 @@
 tags:
   - User API
-summary: Login a user
-description: Login a new user
+summary: Login a user with 2FA
+description: Login a new user with 2FA
 requestBody:
   required: true
   content:
@@ -9,19 +9,18 @@ requestBody:
       schema:
         type: object
         properties:
-          email:
+          tempToken:
             type: string
-            example: 'mohamedsh2782@gmail.com'
-          password:
+            example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
+          totp:
             type: string
-            description: User password (at least 6 characters long and accept letters, numbers, and special characters)
-            example: 'Moh123#'
+            example: '123456'
         required:
-          - email
-          - password
+          - tempToken
+          - totp
 responses:
   '201':
-    description: User created successfully
+    description: User LogedIn Successfully
     content:
       application/json:
         schema:
@@ -29,7 +28,7 @@ responses:
           properties:
             message:
               type: string
-              example: 'User created successfully'
+              example: 'User LogedIn successfully'
             user:
               type: object
               properties:

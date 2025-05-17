@@ -7,6 +7,7 @@ import { PrismaClient } from '@prisma/client';
 import asyncHandler from 'express-async-handler';
 import { authenticator } from 'otplib';
 import qrcode from 'qrcode';
+import NodeCache from 'node-cache';
 
 import { payloadData, RequestWithUser } from '@/api/v1/helpers/types';
 import { sendEmail } from '@/helpers/sendEmail';
@@ -28,6 +29,7 @@ import { UserRefreshTokenRepository } from '@/db/prisma/userRefreshTokenReposito
 
 export function UserRoute(prisma: PrismaClient): Router {
   const router = Router();
+  const cache = new NodeCache();
 
   const userUseCase = new UserUseCase(new UserRepository(prisma));
   const userRefreshTokenUseCase = new UserRefreshTokenUseCase(
@@ -157,8 +159,125 @@ export function UserRoute(prisma: PrismaClient): Router {
         return next(new ApiError('Email or password is incorrect!', 400));
       }
 
-      // Sign token
-      const token = signToken(
+      if (user.twoFAEnabled) {
+        const tempToken = crypto.randomUUID();
+
+        cache.set(
+          (process.env.CACHE_SECRET as string) + tempToken,
+          user.id,
+          process.env.CACHE_EXPIREIN as string
+        );
+
+        res.status(200).json({
+          tempToken,
+          expiresIn: '180s',
+        });
+      } else {
+        // Sign accessToken and refreshToken
+        const accessToken = signToken(
+          {
+            id: user.id,
+            userName: user.username,
+            email: user.email,
+          },
+          {
+            expiresIn: '1h',
+          }
+        );
+        const refreshToken = signToken(
+          {
+            id: user.id,
+            userName: user.username,
+            email: user.email,
+          },
+          {
+            expiresIn: '1h',
+          }
+        );
+
+        // Inser refreshToken
+        await userRefreshTokenUseCase.createUserRefreshToken(
+          user.id,
+          refreshToken
+        );
+
+        res.status(200).json({
+          message: 'Login successful',
+          user: {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            fullName: user.fullName,
+            bio: user.bio,
+            avatarUrl: user.avatarUrl,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
+          },
+          accessToken,
+          refreshToken,
+        });
+      }
+    })
+  );
+
+  /**
+   * @desc    Login with 2FA
+   * @route   POST /api/v1/user/login/2fa
+   * @access  Public
+   */
+  router.post(
+    '/login/2fa',
+    asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+      const { tempToken, totp } = req.body;
+
+      // Validate required fields
+      if (!tempToken || !totp) {
+        return next(
+          new ApiError('Please fill in all fields (tempToken and totp)', 400)
+        );
+      }
+
+      // Check if user id exist in cache
+      const userId = cache.get(
+        (process.env.CACHE_SECRET as string) + tempToken
+      );
+      if (!userId) {
+        return next(
+          new ApiError(
+            'The provided temporary token is incorrect or expired',
+            401
+          )
+        );
+      }
+
+      // Check if the user exists
+      const user = await userUseCase.getUserById(Number(userId));
+      if (!user) {
+        return next(new ApiError('User not found', 404));
+      }
+
+      if (user.twoFASecret) {
+        // Verify the code
+        const isValid = authenticator.check(totp, user.twoFASecret);
+        if (!isValid) {
+          return next(new ApiError('TOTP is not correct or expired', 400));
+        }
+      } else {
+        return next(new ApiError('There is no twoFASecret to verify!', 400));
+      }
+
+      // Sign accessToken and refreshToken
+      const accessToken = signToken(
+        {
+          id: user.id,
+          userName: user.username,
+          email: user.email,
+        },
+        {
+          expiresIn: '1h',
+        }
+      );
+      const refreshToken = signToken(
         {
           id: user.id,
           userName: user.username,
@@ -169,9 +288,11 @@ export function UserRoute(prisma: PrismaClient): Router {
         }
       );
 
-      if (token === '') {
-        return next(new ApiError('JWT_SECRET is not set', 500));
-      }
+      // Inser refreshToken
+      await userRefreshTokenUseCase.createUserRefreshToken(
+        user.id,
+        refreshToken
+      );
 
       res.status(200).json({
         message: 'Login successful',
@@ -185,7 +306,8 @@ export function UserRoute(prisma: PrismaClient): Router {
           createdAt: user.createdAt,
           updatedAt: user.updatedAt,
         },
-        token,
+        accessToken,
+        refreshToken,
       });
     })
   );
@@ -258,9 +380,7 @@ export function UserRoute(prisma: PrismaClient): Router {
 
       if (user.twoFASecret) {
         // Verify the code
-        console.log('here', user.twoFASecret);
         const isValid = authenticator.check(totp, user.twoFASecret);
-        console.log('isValid', isValid);
         if (!isValid) {
           return next(new ApiError('TOTP is not correct or expired', 400));
         }
