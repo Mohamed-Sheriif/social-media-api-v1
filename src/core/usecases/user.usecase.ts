@@ -41,6 +41,14 @@ export class UserUseCase {
     await this.userRepository.updateUser(id, fullName, bio, avatarUrl);
   }
 
+  async updateUserTwoFASecretKey(id: number, secretKey: string): Promise<void> {
+    await this.userRepository.updateUserTwoFASecretKey(id, secretKey);
+  }
+
+  async updateUserTwoFAEnabled(id: number, enabled: boolean): Promise<void> {
+    await this.userRepository.updateUserTwoFAEnabled(id, enabled);
+  }
+
   async updateUserPassword(id: number, newPassword: string): Promise<void> {
     await this.userRepository.updateUserPassword(id, newPassword);
   }

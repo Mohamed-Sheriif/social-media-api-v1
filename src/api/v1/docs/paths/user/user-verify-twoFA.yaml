@@ -1,0 +1,35 @@
+tags:
+  - User API
+summary: Verify Two-Factor Authentication
+description: Verify Two-Factor Authentication
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          totp:
+            type: string
+            example: '123456'
+        required:
+          - totp
+responses:
+  '200':
+    description: 2FA code verified successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: '2FA code verified successfully'
+  '400':
+    description: Totp is required
+  '401':
+    description: Authentication failed
+  '404':
+    description: User not found
+  '500':
+    description: Error sending email

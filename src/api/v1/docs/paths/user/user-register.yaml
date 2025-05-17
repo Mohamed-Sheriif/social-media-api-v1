@@ -9,7 +9,7 @@ requestBody:
       schema:
         type: object
         properties:
-          userName:
+          username:
             type: string
             description: User name
             example: 'ali'

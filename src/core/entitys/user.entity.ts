@@ -10,6 +10,8 @@ export class User {
   passwordResetCode: string | null;
   passwordResetExpires: Date | null;
   passwordResetVerified: boolean | null;
+  twoFASecret: string | null;
+  twoFAEnabled: boolean | null;
   createdAt: Date;
   updatedAt: Date;
 }

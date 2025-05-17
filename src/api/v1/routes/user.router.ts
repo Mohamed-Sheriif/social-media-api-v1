@@ -5,8 +5,10 @@ import passport from 'passport';
 import { Router, Request, Response, NextFunction } from 'express';
 import { PrismaClient } from '@prisma/client';
 import asyncHandler from 'express-async-handler';
+import { authenticator } from 'otplib';
+import qrcode from 'qrcode';
 
-import { payloadData } from '@/api/v1/helpers/types';
+import { payloadData, RequestWithUser } from '@/api/v1/helpers/types';
 import { sendEmail } from '@/helpers/sendEmail';
 import { ApiError } from '@/core/base/apiError';
 import { verifyToken } from '@/api/v1/helpers/jwt';
@@ -184,6 +186,93 @@ export function UserRoute(prisma: PrismaClient): Router {
           updatedAt: user.updatedAt,
         },
         token,
+      });
+    })
+  );
+
+  /**
+   * @desc    Generate QR code for 2fa
+   * @route   GET /api/v1/user/2fa/generate
+   * @access  Private
+   */
+  router.get(
+    '/2fa/generate',
+    authenticate,
+    asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+      const userId = Number((req as RequestWithUser).user.id);
+
+      // Check if the user exists
+      const user = await userUseCase.getUserById(userId);
+      if (!user) {
+        return next(new ApiError('User not found', 404));
+      }
+
+      // Generate a secret key for the user
+      const secret = authenticator.generateSecret();
+
+      // Save the secret key to the user's record in the database
+      await userUseCase.updateUserTwoFASecretKey(userId, secret);
+
+      // Generate a QR code URL
+      const otpauth = authenticator.keyuri(
+        user.email,
+        'Social Media App',
+        secret
+      );
+      const qrCodeUrl = await qrcode.toBuffer(otpauth, {
+        type: 'png',
+        margin: 1,
+      });
+
+      // Set the content type and disposition for the QR code image
+      res.setHeader('Content-Disposition', 'attachment; filename=qrcode.png');
+
+      res.status(200).type('image/png').send(qrCodeUrl);
+    })
+  );
+
+  /**
+   * @desc    Verify 2fa code
+   * @route   POST /api/v1/user/2fa/verify
+   * @access  Private
+   */
+  router.post(
+    '/2fa/verify',
+    authenticate,
+    asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+      const userId = Number((req as RequestWithUser).user.id);
+      const { totp } = req.body;
+
+      // Check it totp exist
+      if (!totp) {
+        return next(new ApiError('totp is required', 400));
+      }
+
+      // Check if the user exists
+      const user = await userUseCase.getUserById(userId);
+      if (!user) {
+        return next(new ApiError('User not found', 404));
+      }
+
+      console.log(user);
+
+      if (user.twoFASecret) {
+        // Verify the code
+        console.log('here', user.twoFASecret);
+        const isValid = authenticator.check(totp, user.twoFASecret);
+        console.log('isValid', isValid);
+        if (!isValid) {
+          return next(new ApiError('TOTP is not correct or expired', 400));
+        }
+      } else {
+        return next(new ApiError('There is no twoFASecret to verify!', 400));
+      }
+
+      // Update the user's record to indicate that 2FA is enabled
+      await userUseCase.updateUserTwoFAEnabled(userId, true);
+
+      res.status(200).json({
+        message: '2FA code verified successfully',
       });
     })
   );

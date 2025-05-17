@@ -36,3 +36,9 @@
 /user/refresh-token:
   post:
     $ref: './user/user-refreshToken.yaml'
+/user/2fa/generate:
+  get:
+    $ref: './user/user-genetate-twoFA.yaml'
+/user/2fa/verify:
+  post:
+    $ref: './user/user-verify-twoFA.yaml'

@@ -65,6 +65,24 @@ export class UserRepository implements IUserRepository {
     });
   }
 
+  async updateUserTwoFASecretKey(id: number, secretKey: string): Promise<void> {
+    await this.prisma.user.update({
+      where: { id },
+      data: {
+        twoFASecret: secretKey,
+      },
+    });
+  }
+
+  async updateUserTwoFAEnabled(id: number, enabled: boolean): Promise<void> {
+    await this.prisma.user.update({
+      where: { id },
+      data: {
+        twoFAEnabled: enabled,
+      },
+    });
+  }
+
   async updateUserPassword(id: number, newPassword: string): Promise<void> {
     await this.prisma.user.update({
       where: { id },

@@ -1,0 +1,20 @@
+tags:
+  - User API
+summary: Generate QR code for 2FA
+description: Generates a QR code for setting up two-factor authentication (2FA) using an authenticator app like Google Authenticator.
+responses:
+  '200':
+    description: QR code image generated successfully
+    content:
+      image/png:
+        schema:
+          type: string
+          format: binary
+  '401':
+    description: Unauthorized - Authentication failed
+  '404':
+    description: User not found
+  '500':
+    description: Internal Server Error
+security:
+  - bearerAuth: []

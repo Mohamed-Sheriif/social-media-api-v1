@@ -20,6 +20,10 @@ export interface IUserRepository {
     avatarUrl: string
   ): Promise<void>;
 
+  updateUserTwoFASecretKey(id: number, secretKey: string): Promise<void>;
+
+  updateUserTwoFAEnabled(id: number, enabled: boolean): Promise<void>;
+
   updateUserPassword(id: number, newPassword: string): Promise<void>;
 
   deleteUser(id: number): Promise<void>;
