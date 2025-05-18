@@ -26,6 +26,8 @@ import { ForgetPasswordRequest } from '@/core/validation/user/ForgetPasswordRequ
 import { ResetPasswordRequest } from '@/core/validation/user/ResetPasswordRequest';
 import { UserRefreshTokenUseCase } from '@/core/usecases/userRefreshToken.usecase';
 import { UserRefreshTokenRepository } from '@/db/prisma/userRefreshTokenRepository';
+import { UserInvalidTokensUseCase } from '@/core/usecases/userInvalidTokens.usecase';
+import { UserInvalidTokensRepository } from '@/db/prisma/userInvalidTokensRepository';
 
 export function UserRoute(prisma: PrismaClient): Router {
   const router = Router();
@@ -34,6 +36,9 @@ export function UserRoute(prisma: PrismaClient): Router {
   const userUseCase = new UserUseCase(new UserRepository(prisma));
   const userRefreshTokenUseCase = new UserRefreshTokenUseCase(
     new UserRefreshTokenRepository(prisma)
+  );
+  const userInvalidTokensUseCase = new UserInvalidTokensUseCase(
+    new UserInvalidTokensRepository(prisma)
   );
 
   /**
@@ -561,6 +566,10 @@ export function UserRoute(prisma: PrismaClient): Router {
     asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
       const { refreshToken } = req.body;
 
+      if (!refreshToken) {
+        return next(new ApiError('Refresh token is required', 400));
+      }
+
       // Verify the refresh token
       const decoded: payloadData = verifyToken(refreshToken) as payloadData;
       if (!decoded) {
@@ -580,7 +589,7 @@ export function UserRoute(prisma: PrismaClient): Router {
       }
 
       // Remove the old refresh token
-      await userRefreshTokenUseCase.deleteUserRefreshToken(
+      await userRefreshTokenUseCase.deleteUserRefreshTokenByUserID(
         userRefreshToken.userId
       );
 
@@ -618,6 +627,36 @@ export function UserRoute(prisma: PrismaClient): Router {
         accessToken,
         refreshToken: newRefreshToken,
       });
+    })
+  );
+
+  /**
+   * @desc    Logout from single device
+   * @route   POST /api/v1/user/logout
+   * @access  Private
+   */
+  router.post(
+    '/logout',
+    authenticate,
+    asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+      const { accessToken, refreshToken } = req.body;
+      const userId = (req as RequestWithUser).user.id;
+
+      // Validate refreshToken and accessToken
+      if (!refreshToken || !accessToken) {
+        return next(new ApiError('Refresh and Access token are required', 400));
+      }
+
+      // Delete refresh token of this device
+      await userRefreshTokenUseCase.deleteUserRefreshTokenByUserIDAndRefreshToken(
+        userId,
+        refreshToken
+      );
+
+      // Insert accessToken in UserInvalidTokens
+      await userInvalidTokensUseCase.insertToken(userId, accessToken, '1h');
+
+      res.status(200).json();
     })
   );
 

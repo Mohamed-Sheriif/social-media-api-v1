@@ -1,12 +1,12 @@
 import asyncHandler from 'express-async-handler';
 import { Request, Response, NextFunction } from 'express';
 
+import prisma from '@/config/prisma';
 import { ApiError } from '@/core/base/apiError';
 import { payloadData, RequestWithUser } from '@/api/v1/helpers/types';
 import { verifyToken } from '@/api/v1/helpers/jwt';
 import { UserInvalidTokensUseCase } from '@/core/usecases/userInvalidTokens.usecase';
 import { UserInvalidTokensRepository } from '@/db/prisma/userInvalidTokensRepository';
-import prisma from '@/config/prisma';
 
 const userInvalidTokensUseCase = new UserInvalidTokensUseCase(
   new UserInvalidTokensRepository(prisma)

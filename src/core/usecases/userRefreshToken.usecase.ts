@@ -30,7 +30,19 @@ export class UserRefreshTokenUseCase {
     return userRefreshToken;
   }
 
-  async deleteUserRefreshToken(userId: number): Promise<void> {
-    await this.userRefreshTokenRepository.deleteUserRefreshToken(userId);
+  async deleteUserRefreshTokenByUserID(userId: number): Promise<void> {
+    await this.userRefreshTokenRepository.deleteUserRefreshTokenByUserID(
+      userId
+    );
+  }
+
+  async deleteUserRefreshTokenByUserIDAndRefreshToken(
+    userId: number,
+    refreshToken: string
+  ): Promise<void> {
+    await this.userRefreshTokenRepository.deleteUserRefreshTokenByUserIDAndRefreshToken(
+      userId,
+      refreshToken
+    );
   }
 }

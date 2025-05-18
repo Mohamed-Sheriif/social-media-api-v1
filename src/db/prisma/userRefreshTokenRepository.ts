@@ -31,10 +31,22 @@ export class UserRefreshTokenRepository implements IUserRefreshTokenRepository {
     return userRefreshToken;
   }
 
-  async deleteUserRefreshToken(userId: number): Promise<void> {
+  async deleteUserRefreshTokenByUserID(userId: number): Promise<void> {
     await this.prisma.userRefreshToken.deleteMany({
       where: {
         userId,
+      },
+    });
+  }
+
+  async deleteUserRefreshTokenByUserIDAndRefreshToken(
+    userId: number,
+    refreshToken: string
+  ): Promise<void> {
+    await this.prisma.userRefreshToken.deleteMany({
+      where: {
+        userId,
+        refreshToken,
       },
     });
   }

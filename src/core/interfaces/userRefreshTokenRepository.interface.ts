@@ -8,5 +8,10 @@ export interface IUserRefreshTokenRepository {
     refreshToken: string
   ): Promise<UserRefreshToken | null>;
 
-  deleteUserRefreshToken(userId: number): Promise<void>;
+  deleteUserRefreshTokenByUserID(userId: number): Promise<void>;
+
+  deleteUserRefreshTokenByUserIDAndRefreshToken(
+    userId: number,
+    refreshToken: string
+  ): Promise<void>;
 }

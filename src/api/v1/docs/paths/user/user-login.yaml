@@ -21,7 +21,7 @@ requestBody:
           - password
 responses:
   '201':
-    description: User created successfully
+    description: LogedIn successfully
     content:
       application/json:
         schema:
@@ -29,7 +29,7 @@ responses:
           properties:
             message:
               type: string
-              example: 'User created successfully'
+              example: 'LogedIn successfully'
             user:
               type: object
               properties:

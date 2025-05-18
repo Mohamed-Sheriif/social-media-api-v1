@@ -1,7 +1,7 @@
 export class UserInvalidTokens {
   userId: number;
   accessToken: string;
-  expirationTime: Date;
+  expirationTime: string;
   createdAt: Date;
   updatedAt: Date;
 }

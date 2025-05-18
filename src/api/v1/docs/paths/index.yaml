@@ -45,3 +45,6 @@
 /user/login/2fa:
   post:
     $ref: './user/user-login-twoFA.yaml'
+/user/logout:
+  post:
+    $ref: './user/user-logout.yaml'
