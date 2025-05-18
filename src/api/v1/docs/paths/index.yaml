@@ -67,3 +67,6 @@
 /post/user/{userId}:
   get:
     $ref: './post/post-user-posts.yaml'
+/post/{id}/status:
+  put:
+    $ref: './post/post-update-status.yaml'

@@ -45,6 +45,15 @@ export class PostUseCase {
     return updatedPost;
   }
 
+  async updatePostStatus(id: number, isPublic: boolean): Promise<Post> {
+    const updatedPost = await this.postRepository.updatePostStatus(
+      id,
+      isPublic
+    );
+
+    return updatedPost;
+  }
+
   async deletePost(id: number): Promise<void> {
     await this.postRepository.deletePost(id);
   }

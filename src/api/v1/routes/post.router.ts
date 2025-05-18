@@ -160,6 +160,50 @@ export function PostRoute(prisma: PrismaClient): Router {
   );
 
   /**
+   * @desc    Change post status
+   * @route   PUT /api/v1/post/:id/status
+   * @access  Private
+   */
+  router.put(
+    '/:id',
+    authenticate,
+    asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+      const id = Number(req.params.id);
+      const { isPublic } = req.body;
+      const userId = (req as RequestWithUser).user.id;
+
+      if (!isPublic || isPublic !== true || isPublic !== false) {
+        return next(
+          new ApiError(
+            'Ispublic is required , and should be true or false',
+            400
+          )
+        );
+      }
+      // Check if post exist
+      const post = await postUsecase.getPostById(id);
+      if (!post) {
+        return next(new ApiError('No post found with this id', 404));
+      }
+
+      // Check if post belong to logged user
+      if (userId !== post.userId) {
+        return next(
+          new ApiError('You are not authorized to update this post', 403)
+        );
+      }
+
+      // Update post status
+      const updatedPost = await postUsecase.updatePostStatus(id, isPublic);
+
+      res.status(200).json({
+        message: 'Post status updated successfully',
+        post: updatedPost,
+      });
+    })
+  );
+
+  /**
    * @desc    Delete post by id
    * @route   DELETE /api/v1/post/:id
    * @access  Private

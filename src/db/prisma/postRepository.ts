@@ -79,6 +79,19 @@ export class PostRepository implements IPostRepository {
     return updatedPost;
   }
 
+  async updatePostStatus(id: number, isPublic: boolean): Promise<Post> {
+    const updatedPost = await this.prisma.post.update({
+      where: {
+        id,
+      },
+      data: {
+        isPublic,
+      },
+    });
+
+    return updatedPost;
+  }
+
   async deletePost(id: number): Promise<void> {
     await this.prisma.post.delete({
       where: {

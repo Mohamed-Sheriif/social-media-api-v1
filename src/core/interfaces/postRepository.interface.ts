@@ -19,5 +19,7 @@ export interface IPostRepository {
     post: Omit<Post, 'id' | 'createdAt' | 'updatedAt' | 'userId'>
   ): Promise<Post>;
 
+  updatePostStatus(id: number, isPublic: boolean): Promise<Post>;
+
   deletePost(id: number): Promise<void>;
 }
