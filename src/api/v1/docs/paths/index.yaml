@@ -48,3 +48,6 @@
 /user/logout:
   post:
     $ref: './user/user-logout.yaml'
+/user/logout-all:
+  post:
+    $ref: './user/user-logout-all.yaml'

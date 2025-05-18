@@ -656,7 +656,34 @@ export function UserRoute(prisma: PrismaClient): Router {
       // Insert accessToken in UserInvalidTokens
       await userInvalidTokensUseCase.insertToken(userId, accessToken, '1h');
 
-      res.status(200).json();
+      res.status(204).json();
+    })
+  );
+
+  /**
+   * @desc    Logout from all devices
+   * @route   POST /api/v1/user/logout-all
+   * @access  Private
+   */
+  router.post(
+    '/logout-all',
+    authenticate,
+    asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+      const { accessToken } = req.body;
+      const userId = (req as RequestWithUser).user.id;
+
+      // Validate refreshToken and accessToken
+      if (!accessToken) {
+        return next(new ApiError('Access token is required', 400));
+      }
+
+      // Delete all user refresh tokens
+      await userRefreshTokenUseCase.deleteUserRefreshTokenByUserID(userId);
+
+      // Insert accessToken in UserInvalidTokens
+      await userInvalidTokensUseCase.insertToken(userId, accessToken, '1h');
+
+      res.status(204).json();
     })
   );
 

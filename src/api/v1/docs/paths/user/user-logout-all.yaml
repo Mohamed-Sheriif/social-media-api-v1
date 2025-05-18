@@ -1,7 +1,7 @@
 tags:
   - User API
-summary: Logout user
-description: Logout  user
+summary: Logout from all devices
+description: Logout  from all devices
 requestBody:
   required: true
   content:
@@ -13,13 +13,8 @@ requestBody:
             type: string
             description: user refresh token
             example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
-          refreshToken:
-            type: string
-            description: user refresh token
-            example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
         required:
           - accessToken
-          - refreshToken
 responses:
   '204':
     description: Logedout successfully
