@@ -1,8 +1,16 @@
-import { ApiError } from '@/core/base/apiError';
-import { Request, Response, NextFunction } from 'express';
 import asyncHandler from 'express-async-handler';
+import { Request, Response, NextFunction } from 'express';
+
+import { ApiError } from '@/core/base/apiError';
 import { payloadData, RequestWithUser } from '@/api/v1/helpers/types';
 import { verifyToken } from '@/api/v1/helpers/jwt';
+import { UserInvalidTokensUseCase } from '@/core/usecases/userInvalidTokens.usecase';
+import { UserInvalidTokensRepository } from '@/db/prisma/userInvalidTokensRepository';
+import prisma from '@/config/prisma';
+
+const userInvalidTokensUseCase = new UserInvalidTokensUseCase(
+  new UserInvalidTokensRepository(prisma)
+);
 
 export const authenticate = asyncHandler(
   async (req: Request, _res: Response, next: NextFunction): Promise<void> => {
@@ -10,6 +18,14 @@ export const authenticate = asyncHandler(
     const token = req.header('Authorization')?.replace('Bearer ', '');
     if (!token) {
       next(new ApiError('Authentication failed: missing token', 401));
+    } else {
+      // Check if accessToken exist in userInvalidTokens
+      const invalidToken = await userInvalidTokensUseCase.getInvalidToken(
+        token
+      );
+      if (invalidToken) {
+        return next(new ApiError('Access token invalid', 401));
+      }
     }
 
     //  Verify JWT token
