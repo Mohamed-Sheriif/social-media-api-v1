@@ -70,9 +70,9 @@ model userInvalidToken {
 model Post {
   id        Int      @id @default(autoincrement())
   userId    Int      @map("user_id")
-  content   String?
-  mediaUrl  String[] @map("media_url")
-  isPublic  Boolean? @default(true) @map("is_public")
+  content   String
+  mediaUrl  String?  @map("media_url")
+  isPublic  Boolean  @map("is_public")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
