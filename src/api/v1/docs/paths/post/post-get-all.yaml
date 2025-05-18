@@ -1,0 +1,75 @@
+tags:
+  - Post API
+summary: Post list
+description: Get All Posts
+parameters:
+  - in: query
+    name: pageNumber
+    schema:
+      type: integer
+    description: The page number.
+  - in: query
+    name: pageSize
+    schema:
+      type: integer
+    description: The page size.
+responses:
+  '200':
+    description: Post list retrieved successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Posts retrieved successfully
+            posts:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The post id
+                    example: 1
+                  userId:
+                    type: integer
+                    description: The user id
+                    example: 2
+                  content:
+                    type: string
+                    example: this is my first post
+                  mediaUrl:
+                    type: string
+                    example: https://example.com/image.jpg
+                  isPublic:
+                    type: boolean
+                    example: true
+                  created_at:
+                    type: string
+                    format: date-time
+                    example: '2021-01-01T00:00:00.000Z'
+                  updated_at:
+                    type: string
+                    format: date-time
+                    example: '2021-01-01T00:00:00.000Z'
+            metaData:
+              type: object
+              properties:
+                page:
+                  type: integer
+                  example: 1
+                pageSize:
+                  type: integer
+                  example: 10
+                total:
+                  type: integer
+                  example: 50
+                totalPages:
+                  type: integer
+                  example: 1
+  '400':
+    description: Bad request
+  '500':
+    description: Internal server error

@@ -1,0 +1,59 @@
+tags:
+  - Post API
+summary: Get user posts
+description: Get user posts by userId
+parameters:
+  - name: userId
+    in: path
+    description: The user id to retrieve posts
+    required: true
+    schema:
+      type: integer
+      example: 1
+responses:
+  '200':
+    description: User posts retrieved Successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: User posts retrieved successfully
+            posts:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The post id
+                    example: 1
+                  userId:
+                    type: integer
+                    description: The user id
+                    example: 2
+                  content:
+                    type: string
+                    example: this is my first post
+                  mediaUrl:
+                    type: string
+                    example: https://example.com/image.jpg
+                  isPublic:
+                    type: boolean
+                    example: true
+                  created_at:
+                    type: string
+                    format: date-time
+                    example: '2021-01-01T00:00:00.000Z'
+                  updated_at:
+                    type: string
+                    format: date-time
+                    example: '2021-01-01T00:00:00.000Z'
+  '400':
+    description: Bad Request
+  '404':
+    description: User not found
+  '500':
+    description: Internal Server Error

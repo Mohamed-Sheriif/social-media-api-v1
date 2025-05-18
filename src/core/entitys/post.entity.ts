@@ -1,9 +1,9 @@
 export class Post {
   id: number;
   userId: number;
-  content: string | null;
-  mediaUrl: string[];
-  isPublic: Boolean | null;
+  content: string;
+  mediaUrl: string | null;
+  isPublic: boolean;
   createdAt: Date;
   updatedAt: Date;
 }

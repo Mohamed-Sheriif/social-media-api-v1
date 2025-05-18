@@ -1,4 +1,4 @@
-# User IPI
+# User API
 /user/register:
   post:
     $ref: './user/user-register.yaml'
@@ -51,3 +51,19 @@
 /user/logout-all:
   post:
     $ref: './user/user-logout-all.yaml'
+# Post API
+/post:
+  post:
+    $ref: './post/post-create.yaml'
+  get:
+    $ref: './post/post-get-all.yaml'
+/post/{id}:
+  get:
+    $ref: './post/post-get.yaml'
+  put:
+    $ref: './post/post-update.yaml'
+  delete:
+    $ref: './post/post-delete.yaml'
+/post/user/{userId}:
+  get:
+    $ref: './post/post-user-posts.yaml'

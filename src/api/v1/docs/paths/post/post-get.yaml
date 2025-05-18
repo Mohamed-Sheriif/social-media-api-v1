@@ -1,0 +1,57 @@
+tags:
+  - Post API
+summary: Get post
+description: Get post by id
+parameters:
+  - name: id
+    in: path
+    description: The post id to retrieve
+    required: true
+    schema:
+      type: integer
+      example: 1
+responses:
+  '200':
+    description: Post retrieved Successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Post retrieved successfully
+            post:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: The post id
+                  example: 1
+                userId:
+                  type: integer
+                  description: The user id
+                  example: 2
+                content:
+                  type: string
+                  example: this is my first post
+                mediaUrl:
+                  type: string
+                  example: https://example.com/image.jpg
+                isPublic:
+                  type: boolean
+                  example: true
+                created_at:
+                  type: string
+                  format: date-time
+                  example: '2021-01-01T00:00:00.000Z'
+                updated_at:
+                  type: string
+                  format: date-time
+                  example: '2021-01-01T00:00:00.000Z'
+  '400':
+    description: Bad Request
+  '404':
+    description: Post not found
+  '500':
+    description: Internal Server Error

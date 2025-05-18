@@ -1,0 +1,47 @@
+tags:
+  - Post API
+summary: Create new post
+description: Create new post
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          content:
+            type: string
+            description: Post content
+            example: 'this is my first post'
+          mediaUrl:
+            type: string
+            example: 'https://example.com/image.jpg'
+          isPublic:
+            type: boolean
+            example: true
+        required:
+          - content
+          - isPublic
+responses:
+  '201':
+    description: Post created successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Post created successfully
+            postId:
+              type: integer
+              description: Unique identifier for the post.
+              example: 1
+  '400':
+    description: Invalid request body or missing required fields.
+  '401':
+    description: Unauthorized. Authentication required.
+  '500':
+    description: Internal Server Error
+security:
+  - bearerAuth: []

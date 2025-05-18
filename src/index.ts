@@ -13,6 +13,7 @@ import '@/config/googleAuth';
 
 // Imported Routes
 import { UserRoute } from '@/api/v1/routes/user.router';
+import { PostRoute } from '@/api/v1/routes/post.router';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -40,6 +41,7 @@ app.use(passport.session());
 // Routes
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerJSON));
 app.use('/api/v1/user', UserRoute(Prisma));
+app.use('/api/v1/post', PostRoute(Prisma));
 
 // Not Found Route
 // app.all('*', (req, _res, next) => {
