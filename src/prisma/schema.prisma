@@ -97,6 +97,10 @@ model Comment {
   user User @relation(fields: [userId], references: [id])
   post Post @relation(fields: [postId], references: [id])
 
+  // Self-relation for nested comments
+  parent  Comment?  @relation("CommentToReplies", fields: [parentId], references: [id])
+  replies Comment[] @relation("CommentToReplies")
+
   @@index([postId], name: "idx_post_id")
   @@index([parentId], name: "idx_parent_id")
   @@map("comments")
