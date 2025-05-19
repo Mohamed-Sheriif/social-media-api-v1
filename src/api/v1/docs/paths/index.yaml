@@ -80,3 +80,5 @@
     $ref: './comment/comment-get.yaml'
   put:
     $ref: './comment/comment-update.yaml'
+  delete:
+    $ref: './comment/comment-delete.yaml'

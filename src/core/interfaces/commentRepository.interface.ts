@@ -11,4 +11,6 @@ export interface ICommentRepository {
     id: number,
     content: string
   ): Promise<Omit<Comment, 'replies'> | null>;
+
+  deleteComment(id: number): Promise<void>;
 }

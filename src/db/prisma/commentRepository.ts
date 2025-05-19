@@ -56,4 +56,12 @@ export class CommentRepository implements ICommentRepository {
 
     return updatedComment;
   }
+
+  async deleteComment(id: number): Promise<void> {
+    await this.prisma.comment.delete({
+      where: {
+        id,
+      },
+    });
+  }
 }

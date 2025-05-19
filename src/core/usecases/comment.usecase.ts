@@ -29,4 +29,8 @@ export class CommentUseCase {
 
     return updatedComment;
   }
+
+  async deleteComment(id: number): Promise<void> {
+    await this.commentRepository.deleteComment(id);
+  }
 }
