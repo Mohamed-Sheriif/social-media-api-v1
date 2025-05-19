@@ -109,12 +109,12 @@ model Comment {
 model Like {
   id        Int      @id @default(autoincrement())
   userId    Int      @unique @map("user_id")
-  postId    Int?     @unique @map("post_id")
+  postId    Int      @unique @map("post_id")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  user User  @relation(fields: [userId], references: [id])
-  post Post? @relation(fields: [postId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+  post Post @relation(fields: [postId], references: [id])
 
   @@map("likes")
 }
