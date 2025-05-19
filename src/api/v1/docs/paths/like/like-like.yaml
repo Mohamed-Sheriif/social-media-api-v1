@@ -1,0 +1,35 @@
+tags:
+  - Like API
+summary: Like post
+description: Like post
+parameters:
+  - name: id
+    in: path
+    description: The post id to like
+    required: true
+    schema:
+      type: integer
+      example: 1
+responses:
+  '201':
+    description: Post liked successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Post liked successfully
+            likeId:
+              type: integer
+              description: Unique identifier for the like.
+              example: 1
+  '401':
+    description: Authentication required.
+  '409':
+    description: Conflict, You already liked this post brfore!
+  '500':
+    description: Internal Server Error
+security:
+  - bearerAuth: []

@@ -15,6 +15,7 @@ import '@/config/googleAuth';
 import { UserRoute } from '@/api/v1/routes/user.router';
 import { PostRoute } from '@/api/v1/routes/post.router';
 import { CommentRoute } from '@/api/v1/routes/comment.router';
+import { LikeRoute } from '@/api/v1/routes/like.router';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -44,6 +45,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerJSON));
 app.use('/api/v1/user', UserRoute(Prisma));
 app.use('/api/v1/post', PostRoute(Prisma));
 app.use('/api/v1/comment', CommentRoute(Prisma));
+app.use('/api/v1/likes', LikeRoute(Prisma));
 
 // Not Found Route
 // app.all('*', (req, _res, next) => {

@@ -85,3 +85,11 @@
     $ref: './comment/comment-update.yaml'
   delete:
     $ref: './comment/comment-delete.yaml'
+
+# Like API
+/likes/{postId}/like:
+  post:
+    $ref: './like/like-like.yaml'
+/likes/{postId}/unlike:
+  post:
+    $ref: './like/like-unlike.yaml'
