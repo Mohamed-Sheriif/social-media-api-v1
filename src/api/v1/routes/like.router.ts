@@ -8,7 +8,7 @@ import { RequestWithUser } from '@/api/v1/helpers/types';
 import { PostUseCase } from '@/core/usecases/post.usecase';
 import { PostRepository } from '@/db/prisma/postRepository';
 import { LikeUseCase } from '@/core/usecases/like.usecase';
-import { LikeRepository } from '@/db/prisma/likeRepository.interface';
+import { LikeRepository } from '@/db/prisma/likeRepository';
 
 export function LikeRoute(prisma: PrismaClient): Router {
   const router = Router();
@@ -21,7 +21,7 @@ export function LikeRoute(prisma: PrismaClient): Router {
    * @access  Private
    */
   router.post(
-    ':postId/like',
+    '/:postId/like',
     authenticate,
     asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
       const postId = Number(req.params.postId);
@@ -57,7 +57,7 @@ export function LikeRoute(prisma: PrismaClient): Router {
    * @access  Private
    */
   router.post(
-    ':postId/unlike',
+    '/:postId/unlike',
     authenticate,
     asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
       const postId = Number(req.params.postId);

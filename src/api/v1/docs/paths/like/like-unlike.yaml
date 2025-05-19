@@ -3,7 +3,7 @@ tags:
 summary: Unlike post
 description: Unlike post
 parameters:
-  - name: id
+  - name: postId
     in: path
     description: The post id to like
     required: true
@@ -12,7 +12,7 @@ parameters:
       example: 1
 responses:
   '200':
-    description: Post liked successfully
+    description: Unliked the post successfully
     content:
       application/json:
         schema:
@@ -20,7 +20,7 @@ responses:
           properties:
             message:
               type: string
-              example: Post liked successfully
+              example: Unliked the post successfully
   '401':
     description: Authentication required.
   '404':

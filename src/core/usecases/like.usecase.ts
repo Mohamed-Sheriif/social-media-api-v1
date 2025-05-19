@@ -25,4 +25,10 @@ export class LikeUseCase {
 
     return like;
   }
+
+  async getPostLikes(postId: number): Promise<Like[]> {
+    const postLikes = await this.likeRepository.getPostLikes(postId);
+
+    return postLikes;
+  }
 }

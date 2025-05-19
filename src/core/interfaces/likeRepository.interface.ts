@@ -9,4 +9,6 @@ export interface ILikeRepository {
     userId: number,
     postId: number
   ): Promise<Like | null>;
+
+  getPostLikes(postId: number): Promise<Like[]>;
 }

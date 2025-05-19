@@ -13,12 +13,15 @@ import { UserUseCase } from '@/core/usecases/user.usecase';
 import { UserRepository } from '@/db/prisma/userRepository';
 import { CommentUseCase } from '@/core/usecases/comment.usecase';
 import { CommentRepository } from '@/db/prisma/commentRepository';
+import { LikeUseCase } from '@/core/usecases/like.usecase';
+import { LikeRepository } from '@/db/prisma/likeRepository';
 
 export function PostRoute(prisma: PrismaClient): Router {
   const router = Router();
   const postUsecase = new PostUseCase(new PostRepository(prisma));
   const userUsecase = new UserUseCase(new UserRepository(prisma));
   const commentUsecase = new CommentUseCase(new CommentRepository(prisma));
+  const likeUsecase = new LikeUseCase(new LikeRepository(prisma));
 
   /**
    * @desc    Create new post
@@ -104,26 +107,51 @@ export function PostRoute(prisma: PrismaClient): Router {
 
   /**
    * @desc    Get post comments
-   * @route   GET /api/v1/post/:id/comments
+   * @route   GET /api/v1/post/:postId/comments
    * @access  Public
    */
   router.get(
-    '/:id/comments',
+    '/:postId/comments',
     asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-      const id = Number(req.params.id);
+      const postId = Number(req.params.postId);
 
       // Check if post exist
-      const post = await postUsecase.getPostById(id);
+      const post = await postUsecase.getPostById(postId);
       if (!post) {
         return next(new ApiError('No post found with this id', 404));
       }
 
       // Get post comments
-      const comments = await commentUsecase.getPostComments(id);
+      const comments = await commentUsecase.getPostComments(postId);
 
       res
         .status(200)
         .json({ message: 'Post comments retrieved successfully', comments });
+    })
+  );
+
+  /**
+   * @desc    Get post likes
+   * @route   GET /api/v1/post/:postId/likes
+   * @access  Public
+   */
+  router.get(
+    '/:postId/likes',
+    asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+      const postId = Number(req.params.postId);
+
+      // Check if post exist
+      const post = await postUsecase.getPostById(postId);
+      if (!post) {
+        return next(new ApiError('No post found with this id', 404));
+      }
+
+      // Get post likes
+      const likes = await likeUsecase.getPostLikes(postId);
+
+      res
+        .status(200)
+        .json({ message: 'Post likes retrieved successfully', likes });
     })
   );
 

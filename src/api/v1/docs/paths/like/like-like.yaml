@@ -3,7 +3,7 @@ tags:
 summary: Like post
 description: Like post
 parameters:
-  - name: id
+  - name: postId
     in: path
     description: The post id to like
     required: true

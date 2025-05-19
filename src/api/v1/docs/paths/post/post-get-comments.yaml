@@ -3,7 +3,7 @@ tags:
 summary: Get post comments
 description: Get post comments by id
 parameters:
-  - name: id
+  - name: postId
     in: path
     description: The post id to retrieve thier comment
     required: true
@@ -30,14 +30,19 @@ responses:
                     type: integer
                     description: The comment id
                     example: 3
-                  userId:
-                    type: integer
-                    description: The user id
-                    example: 2
-                  postId:
-                    type: integer
-                    description: The post id
-                    example: 1
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: The user id
+                        example: 3
+                      username:
+                        type: string
+                        example: mohamed sherif
+                      avatarUrl:
+                        type: string
+                        example: 'https://example.com/avatar.jpg'
                   parentId:
                     type: integer
                     description: The parent comment id
@@ -45,10 +50,6 @@ responses:
                   content:
                     type: string
                     example: this is my first comment
-                  created_at:
-                    type: string
-                    format: date-time
-                    example: '2021-01-01T00:00:00.000Z'
                   updated_at:
                     type: string
                     format: date-time
@@ -62,10 +63,19 @@ responses:
                           type: integer
                           description: The comment id
                           example: 3
-                        userId:
-                          type: integer
-                          description: The user id
-                          example: 2
+                        user:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              description: The user id
+                              example: 3
+                            username:
+                              type: string
+                              example: mohamed sherif
+                            avatarUrl:
+                              type: string
+                              example: 'https://example.com/avatar.jpg'
                         content:
                           type: string
                           example: this is my first comment

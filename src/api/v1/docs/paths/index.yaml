@@ -70,9 +70,12 @@
 /post/{id}/status:
   put:
     $ref: './post/post-update-status.yaml'
-/post/{id}/comments:
+/post/{postId}/comments:
   get:
     $ref: './post/post-get-comments.yaml'
+/post/{postId}/likes:
+  get:
+    $ref: './post/post-get-likes.yaml'
 
 # Comment API
 /comment:

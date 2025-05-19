@@ -43,4 +43,23 @@ export class LikeRepository implements ILikeRepository {
 
     return like;
   }
+
+  async getPostLikes(postId: number): Promise<Like[]> {
+    const postLikes = await this.prisma.like.findMany({
+      where: {
+        postId,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+            avatarUrl: true,
+          },
+        },
+      },
+    });
+
+    return postLikes;
+  }
 }

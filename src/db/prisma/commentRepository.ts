@@ -41,17 +41,30 @@ export class CommentRepository implements ICommentRepository {
     return comment;
   }
 
-  async getPostComments(postId: number): Promise<Comment[]> {
-    const comments = await this.prisma.comment.findMany({
+  async getPostComments(postId: number): Promise<any> {
+    const postComments = await this.prisma.comment.findMany({
       where: {
         postId,
         parentId: null, // only top-level comments
       },
-      include: {
+      select: {
+        id: true,
+        user: {
+          select: {
+            id: true,
+            username: true,
+            avatarUrl: true,
+          },
+        },
+        parentId: true,
+        content: true,
+        updatedAt: true,
         replies: {
           select: {
             id: true,
-            userId: true,
+            user: {
+              select: { id: true, username: true, avatarUrl: true },
+            },
             content: true,
             updatedAt: true,
           },
@@ -59,7 +72,7 @@ export class CommentRepository implements ICommentRepository {
       },
     });
 
-    return comments;
+    return postComments;
   }
 
   async updateComment(
