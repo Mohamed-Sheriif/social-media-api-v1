@@ -1,0 +1,49 @@
+tags:
+  - Comment API
+summary: Create new comment
+description: Create new comment
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          parentId:
+            type: number
+            example: 1
+          postId:
+            type: number
+            example: 2
+          content:
+            type: string
+            description: Post content
+            example: 'this is my first comment'
+        required:
+          - postId
+          - content
+responses:
+  '201':
+    description: Comment created successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Comment created successfully
+            postId:
+              type: integer
+              description: Unique identifier for the comment.
+              example: 1
+  '400':
+    description: Invalid request body or missing required fields.
+  '401':
+    description: Unauthorized. Authentication required.
+  '404':
+    description: No comment found with this parentId.
+  '500':
+    description: Internal Server Error.
+security:
+  - bearerAuth: []
