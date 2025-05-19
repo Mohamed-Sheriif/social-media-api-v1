@@ -6,4 +6,10 @@ export class Comment {
   content: string;
   createdAt: Date;
   updatedAt: Date;
+  replies: {
+    id: number;
+    userId: number;
+    content: string;
+    updatedAt: Date;
+  }[];
 }

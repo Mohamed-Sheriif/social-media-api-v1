@@ -7,7 +7,7 @@ export class CommentRepository implements ICommentRepository {
   constructor(private prisma: PrismaClient) {}
 
   async createComment(
-    comment: Omit<Comment, 'id' | 'createdAt' | 'updatedAt'>
+    comment: Omit<Comment, 'id' | 'createdAt' | 'updatedAt' | 'replies'>
   ): Promise<number> {
     const createdComment = await this.prisma.comment.create({
       data: {
@@ -26,8 +26,34 @@ export class CommentRepository implements ICommentRepository {
       where: {
         id,
       },
+      include: {
+        replies: {
+          select: {
+            id: true,
+            userId: true,
+            content: true,
+            updatedAt: true,
+          },
+        },
+      },
     });
 
     return comment;
+  }
+
+  async updateComment(
+    id: number,
+    content: string
+  ): Promise<Omit<Comment, 'replies'> | null> {
+    const updatedComment = await this.prisma.comment.update({
+      where: {
+        id,
+      },
+      data: {
+        content: content,
+      },
+    });
+
+    return updatedComment;
   }
 }

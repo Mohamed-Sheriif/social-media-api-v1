@@ -1,0 +1,78 @@
+tags:
+  - Comment API
+summary: Update comment
+description: Update comment
+parameters:
+  - name: id
+    in: path
+    description: The comment id to update
+    required: true
+    schema:
+      type: integer
+      example: 1
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          content:
+            type: string
+            description: Comment content
+            example: 'this is my first comment'
+        required:
+          - content
+responses:
+  '200':
+    description: Comment updated successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Comment retrieved successfully
+            comment:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: The comment id
+                  example: 3
+                userId:
+                  type: integer
+                  description: The user id
+                  example: 2
+                postId:
+                  type: integer
+                  description: The post id
+                  example: 1
+                parentId:
+                  type: integer
+                  description: The parent comment id
+                  example: 1
+                content:
+                  type: string
+                  example: this is my first comment
+                created_at:
+                  type: string
+                  format: date-time
+                  example: '2021-01-01T00:00:00.000Z'
+                updated_at:
+                  type: string
+                  format: date-time
+                  example: '2021-01-01T00:00:00.000Z'
+  '400':
+    description: Invalid request body or missing required fields.
+  '401':
+    description: Authentication required.
+  '403':
+    description: Unauthorized.
+  '404':
+    description: Comment not found.
+  '500':
+    description: Internal Server Error
+security:
+  - bearerAuth: []

@@ -5,7 +5,7 @@ export class CommentUseCase {
   constructor(private commentRepository: ICommentRepository) {}
 
   async createComment(
-    comment: Omit<Comment, 'id' | 'createdAt' | 'updatedAt'>
+    comment: Omit<Comment, 'id' | 'createdAt' | 'updatedAt' | 'replies'>
   ): Promise<number> {
     const commentId = await this.commentRepository.createComment(comment);
 
@@ -16,5 +16,17 @@ export class CommentUseCase {
     const comment = await this.commentRepository.getCommentById(id);
 
     return comment;
+  }
+
+  async updateComment(
+    id: number,
+    content: string
+  ): Promise<Omit<Comment, 'replies'> | null> {
+    const updatedComment = await this.commentRepository.updateComment(
+      id,
+      content
+    );
+
+    return updatedComment;
   }
 }

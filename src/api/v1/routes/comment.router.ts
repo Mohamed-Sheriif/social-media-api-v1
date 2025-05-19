@@ -51,5 +51,70 @@ export function CommentRoute(prisma: PrismaClient): Router {
     })
   );
 
+  /**
+   * @desc    Get comment by id
+   * @route   GET /api/v1/comment/:id
+   * @access  Public
+   */
+  router.get(
+    '/:id',
+    asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+      const id = Number(req.params.id);
+
+      // Check if comment exist
+      const comment = await commentUsecase.getCommentById(id);
+      if (!comment) {
+        return next(new ApiError('No comment found with this id', 404));
+      }
+
+      res
+        .status(200)
+        .json({ message: 'Comment retrieved successfully', comment });
+    })
+  );
+
+  /**
+   * @desc    Update comment
+   * @route   PUT /api/v1/comment/:id
+   * @access  Ptivate
+   */
+  router.put(
+    '/:id',
+    authenticate,
+    asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+      const { content } = req.body;
+      const id = Number(req.params.id);
+      const userId = (req as RequestWithUser).user.id;
+
+      // Validate content
+      if (!content || typeof content != 'string') {
+        return next(
+          new ApiError('Content is required , and must be string', 400)
+        );
+      }
+
+      // Check if comment exist
+      const comment = await commentUsecase.getCommentById(id);
+      if (!comment) {
+        return next(new ApiError('No comment found with this id', 404));
+      }
+
+      // Check if comment belong to logged user
+      if (userId !== comment.userId) {
+        return next(
+          new ApiError('You are not authorized to update this comment', 403)
+        );
+      }
+
+      // Update comment
+      const updatedComment = await commentUsecase.updateComment(id, content);
+
+      res.status(200).json({
+        message: 'Comment retrieved successfully',
+        comment: updatedComment,
+      });
+    })
+  );
+
   return router;
 }

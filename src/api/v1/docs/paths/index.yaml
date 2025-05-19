@@ -75,3 +75,8 @@
 /comment:
   post:
     $ref: './comment/comment-create.yaml'
+/comment/{id}:
+  get:
+    $ref: './comment/comment-get.yaml'
+  put:
+    $ref: './comment/comment-update.yaml'
