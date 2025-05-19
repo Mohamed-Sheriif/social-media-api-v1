@@ -44,12 +44,13 @@ export class LikeRepository implements ILikeRepository {
     return like;
   }
 
-  async getPostLikes(postId: number): Promise<Like[]> {
+  async getPostLikes(postId: number): Promise<any> {
     const postLikes = await this.prisma.like.findMany({
       where: {
         postId,
       },
-      include: {
+      select: {
+        id: true,
         user: {
           select: {
             id: true,
@@ -57,6 +58,7 @@ export class LikeRepository implements ILikeRepository {
             avatarUrl: true,
           },
         },
+        createdAt: true,
       },
     });
 
