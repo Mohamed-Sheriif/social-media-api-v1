@@ -41,6 +41,27 @@ export class CommentRepository implements ICommentRepository {
     return comment;
   }
 
+  async getPostComments(postId: number): Promise<Comment[]> {
+    const comments = await this.prisma.comment.findMany({
+      where: {
+        postId,
+        parentId: null, // only top-level comments
+      },
+      include: {
+        replies: {
+          select: {
+            id: true,
+            userId: true,
+            content: true,
+            updatedAt: true,
+          },
+        },
+      },
+    });
+
+    return comments;
+  }
+
   async updateComment(
     id: number,
     content: string

@@ -1,0 +1,81 @@
+tags:
+  - Post API
+summary: Get post comments
+description: Get post comments by id
+parameters:
+  - name: id
+    in: path
+    description: The post id to retrieve thier comment
+    required: true
+    schema:
+      type: integer
+      example: 1
+responses:
+  '200':
+    description: Post comments retrieved Successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Post comments retrieved Successfull
+            comments:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The comment id
+                    example: 3
+                  userId:
+                    type: integer
+                    description: The user id
+                    example: 2
+                  postId:
+                    type: integer
+                    description: The post id
+                    example: 1
+                  parentId:
+                    type: integer
+                    description: The parent comment id
+                    example: 1
+                  content:
+                    type: string
+                    example: this is my first comment
+                  created_at:
+                    type: string
+                    format: date-time
+                    example: '2021-01-01T00:00:00.000Z'
+                  updated_at:
+                    type: string
+                    format: date-time
+                    example: '2021-01-01T00:00:00.000Z'
+                  replies:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: The comment id
+                          example: 3
+                        userId:
+                          type: integer
+                          description: The user id
+                          example: 2
+                        content:
+                          type: string
+                          example: this is my first comment
+                        updated_at:
+                          type: string
+                          format: date-time
+                          example: '2021-01-01T00:00:00.000Z'
+  '400':
+    description: Bad Request
+  '404':
+    description: Post not found
+  '500':
+    description: Internal Server Error

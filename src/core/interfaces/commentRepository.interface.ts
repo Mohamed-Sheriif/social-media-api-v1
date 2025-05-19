@@ -7,6 +7,8 @@ export interface ICommentRepository {
 
   getCommentById(id: number): Promise<Comment | null>;
 
+  getPostComments(postId: number): Promise<Comment[]>;
+
   updateComment(
     id: number,
     content: string

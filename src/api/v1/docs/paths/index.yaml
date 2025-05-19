@@ -70,6 +70,9 @@
 /post/{id}/status:
   put:
     $ref: './post/post-update-status.yaml'
+/post/{id}/comments:
+  get:
+    $ref: './post/post-get-comments.yaml'
 
 # Comment API
 /comment:

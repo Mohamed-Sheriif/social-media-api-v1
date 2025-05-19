@@ -18,6 +18,12 @@ export class CommentUseCase {
     return comment;
   }
 
+  async getPostComments(postId: number): Promise<Comment[]> {
+    const comments = await this.commentRepository.getPostComments(postId);
+
+    return comments;
+  }
+
   async updateComment(
     id: number,
     content: string

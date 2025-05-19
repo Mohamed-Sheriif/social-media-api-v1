@@ -11,11 +11,14 @@ import { PostRepository } from '@/db/prisma/postRepository';
 import { CreatePostRequest } from '@/core/validation/post/CreatePostRequest';
 import { UserUseCase } from '@/core/usecases/user.usecase';
 import { UserRepository } from '@/db/prisma/userRepository';
+import { CommentUseCase } from '@/core/usecases/comment.usecase';
+import { CommentRepository } from '@/db/prisma/commentRepository';
 
 export function PostRoute(prisma: PrismaClient): Router {
   const router = Router();
   const postUsecase = new PostUseCase(new PostRepository(prisma));
   const userUsecase = new UserUseCase(new UserRepository(prisma));
+  const commentUsecase = new CommentUseCase(new CommentRepository(prisma));
 
   /**
    * @desc    Create new post
@@ -96,6 +99,31 @@ export function PostRoute(prisma: PrismaClient): Router {
       res
         .status(200)
         .json({ message: 'User posts retrieved successfully', posts });
+    })
+  );
+
+  /**
+   * @desc    Get post comments
+   * @route   GET /api/v1/post/:id/comments
+   * @access  Public
+   */
+  router.get(
+    '/:id/comments',
+    asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+      const id = Number(req.params.id);
+
+      // Check if post exist
+      const post = await postUsecase.getPostById(id);
+      if (!post) {
+        return next(new ApiError('No post found with this id', 404));
+      }
+
+      // Get post comments
+      const comments = await commentUsecase.getPostComments(id);
+
+      res
+        .status(200)
+        .json({ message: 'Post comments retrieved successfully', comments });
     })
   );
 
