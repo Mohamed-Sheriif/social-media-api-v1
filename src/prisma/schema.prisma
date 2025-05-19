@@ -98,7 +98,7 @@ model Comment {
   post Post @relation(fields: [postId], references: [id])
 
   // Self-relation for nested comments
-  parent  Comment?  @relation("CommentToReplies", fields: [parentId], references: [id])
+  parent  Comment?  @relation("CommentToReplies", fields: [parentId], references: [id], onDelete: Cascade)
   replies Comment[] @relation("CommentToReplies")
 
   @@index([postId], name: "idx_post_id")
