@@ -104,3 +104,6 @@
 /friendship/{requesterId}/status:
   put:
     $ref: './friendship/friendship-update.yaml'
+/friendship/{userId}/friends:
+  get:
+    $ref: './friendship/friendship-get-friends.yaml'

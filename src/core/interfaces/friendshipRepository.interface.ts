@@ -8,6 +8,8 @@ export interface IFriendshipRepository {
     addresseeId: number
   ): Promise<Friendship | null>;
 
+  getUserFriends(userId: number): Promise<Friendship[]>;
+
   updateFriendshipStatusToAccepted(
     requesterId: number,
     addresseeId: number

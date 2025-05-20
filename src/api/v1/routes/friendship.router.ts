@@ -71,6 +71,32 @@ export function FriendshipRoute(prisma: PrismaClient): Router {
   );
 
   /**
+   * @desc    Get all friends for a user
+   * @route   GET /api/v1/friendship/:userId/friends
+   * @access  Private
+   */
+  router.get(
+    '/:userId/friends',
+    authenticate,
+    asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+      const userId = Number(req.params.userId);
+
+      // Check if addressee user exist
+      const user = await userUsecase.getUserById(userId);
+      if (!user) {
+        return next(new ApiError('User with this does not exist', 404));
+      }
+
+      // Send friend request
+      const friends = await friendshipUsecase.getUserFriends(userId);
+
+      res
+        .status(200)
+        .json({ message: 'Friends retrieved successfully', friends });
+    })
+  );
+
+  /**
    * @desc    Update friendship status
    * @route   PUT /api/v1/friendship/:requesterId/status
    * @access  Private
@@ -100,9 +126,7 @@ export function FriendshipRoute(prisma: PrismaClient): Router {
           new ApiError('There no friendship request between you and him!', 404)
         );
       } else if (freindship.status === 'accepted') {
-        return next(
-          new ApiError('You already friends!', 409)
-        );
+        return next(new ApiError('You already friends!', 409));
       } else {
         // Check if the logged in user is the addressee user
         if (freindship.addresseeId !== addresseeId) {

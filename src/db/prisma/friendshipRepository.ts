@@ -36,6 +36,33 @@ export class FriendshipRepository implements IFriendshipRepository {
     return friendship;
   }
 
+  async getUserFriends(userId: number): Promise<any> {
+    const friends = await this.prisma.friendship.findMany({
+      where: {
+        OR: [{ requesterId: userId }, { addresseeId: userId }],
+        status: 'accepted',
+      },
+      select: {
+        id: true,
+        requester: {
+          select: {
+            username: true,
+            avatarUrl: true,
+          },
+        },
+        addressee: {
+          select: {
+            username: true,
+            avatarUrl: true,
+          },
+        },
+        status: true,
+      },
+    });
+
+    return friends;
+  }
+
   async updateFriendshipStatusToAccepted(
     requesterId: number,
     addresseeId: number

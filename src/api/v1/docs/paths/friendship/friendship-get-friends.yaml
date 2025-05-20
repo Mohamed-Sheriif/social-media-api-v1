@@ -1,0 +1,60 @@
+tags:
+  - Friendship API
+summary: Get friends
+description: Get friends
+parameters:
+  - name: userId
+    in: path
+    description: The id of the user to get his friends
+    required: true
+    schema:
+      type: integer
+      example: 1
+responses:
+  '201':
+    description: Friends retrieved successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Friends retrieved successfully
+            friends:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The friendship id
+                    example: 1
+                  requesterId:
+                    type: integer
+                    description: The user id
+                    example: 2
+                  addresseeId:
+                    type: integer
+                    description: The post id
+                    example: 1
+                  status:
+                    type: string
+                    description: friendship status
+                    example: accepted
+                  created_at:
+                    type: string
+                    format: date-time
+                    example: '2021-01-01T00:00:00.000Z'
+                  updated_at:
+                    type: string
+                    format: date-time
+                    example: '2021-01-01T00:00:00.000Z'
+  '401':
+    description: Authentication required.
+  '404':
+    description: User with this Does not exist.
+  '500':
+    description: Internal Server Error.
+security:
+  - bearerAuth: []
