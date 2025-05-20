@@ -1,18 +1,10 @@
 tags:
   - Friendship API
-summary: Get friends
-description: Get friends
-parameters:
-  - name: userId
-    in: path
-    description: The id of the user to get his friends
-    required: true
-    schema:
-      type: integer
-      example: 1
+summary: Get friends request
+description: Get friends request
 responses:
   '200':
-    description: Friends retrieved successfully
+    description: Friends request retrieved successfully
     content:
       application/json:
         schema:
@@ -20,8 +12,8 @@ responses:
           properties:
             message:
               type: string
-              example: Friends retrieved successfully
-            friends:
+              example: Friends request retrieved successfully
+            friendsRequest:
               type: array
               items:
                 type: object
@@ -54,8 +46,6 @@ responses:
                     example: pending
   '401':
     description: Authentication required.
-  '404':
-    description: User with this Does not exist.
   '500':
     description: Internal Server Error.
 security:

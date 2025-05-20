@@ -63,6 +63,33 @@ export class FriendshipRepository implements IFriendshipRepository {
     return friends;
   }
 
+  async getUserFriendsRequest(userId: number): Promise<any> {
+    const friendsRequest = await this.prisma.friendship.findMany({
+      where: {
+        addresseeId: userId,
+        status: 'pending',
+      },
+      select: {
+        id: true,
+        requester: {
+          select: {
+            username: true,
+            avatarUrl: true,
+          },
+        },
+        addressee: {
+          select: {
+            username: true,
+            avatarUrl: true,
+          },
+        },
+        status: true,
+      },
+    });
+
+    return friendsRequest;
+  }
+
   async updateFriendshipStatusToAccepted(
     requesterId: number,
     addresseeId: number
@@ -84,12 +111,12 @@ export class FriendshipRepository implements IFriendshipRepository {
     requesterId: number,
     addresseeId: number
   ): Promise<void> {
-    await this.prisma.friendship.delete({
+    await this.prisma.friendship.deleteMany({
       where: {
-        requesterId_addresseeId: {
-          requesterId,
-          addresseeId,
-        },
+        OR: [
+          { requesterId, addresseeId },
+          { requesterId: addresseeId, addresseeId: requesterId },
+        ],
       },
     });
   }

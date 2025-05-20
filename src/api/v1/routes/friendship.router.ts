@@ -87,12 +87,35 @@ export function FriendshipRoute(prisma: PrismaClient): Router {
         return next(new ApiError('User with this does not exist', 404));
       }
 
-      // Send friend request
+      // Get user friends
       const friends = await friendshipUsecase.getUserFriends(userId);
 
       res
         .status(200)
         .json({ message: 'Friends retrieved successfully', friends });
+    })
+  );
+
+  /**
+   * @desc    Get friends request for a user
+   * @route   GET /api/v1/friendship/friends-request
+   * @access  Private
+   */
+  router.get(
+    '/friends-request',
+    authenticate,
+    asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
+      const userId = (req as RequestWithUser).user.id;
+
+      // Get user friends request
+      const friendsRequest = await friendshipUsecase.getUserFriendsRequest(
+        userId
+      );
+
+      res.status(200).json({
+        message: 'Friends request retrieved successfully',
+        friendsRequest,
+      });
     })
   );
 
@@ -152,6 +175,40 @@ export function FriendshipRoute(prisma: PrismaClient): Router {
       res
         .status(200)
         .json({ message: `Frendship request ${status} successfully` });
+    })
+  );
+
+  /**
+   * @desc    Unfriend
+   * @route   DELETE /api/v1/friendship/:userId/friends
+   * @access  Private
+   */
+  router.delete(
+    '/:userId/friends',
+    authenticate,
+    asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+      const userId = Number(req.params.userId);
+      const loggedUserId = (req as RequestWithUser).user.id;
+
+      // Check if user exist
+      const user = await userUsecase.getUserById(userId);
+      if (!user) {
+        return next(new ApiError('User with this does not exist', 404));
+      }
+
+      // Check if you are friends
+      const freindship = await friendshipUsecase.getFriendshipRequest(
+        userId,
+        loggedUserId
+      );
+      if (!freindship) {
+        return next(new ApiError('You are not friends!', 409));
+      }
+
+      // Delete friendship
+      await friendshipUsecase.deleteFriendship(userId, loggedUserId);
+
+      res.status(200).json({ message: 'Friendship deleted successfully' });
     })
   );
 

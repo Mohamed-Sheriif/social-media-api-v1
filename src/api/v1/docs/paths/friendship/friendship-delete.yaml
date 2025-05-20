@@ -1,0 +1,33 @@
+tags:
+  - Friendship API
+summary: Delete friendship
+description: Delete friendship
+parameters:
+  - name: userId
+    in: path
+    description: The user id to delete friendship
+    required: true
+    schema:
+      type: integer
+      example: 1
+responses:
+  '200':
+    description: Frendship deleted successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Frendship deleted successfully
+  '401':
+    description: Authentication required.
+  '404':
+    description: User with this Does not exist.
+  '409':
+    description: You are not friends!
+  '500':
+    description: Internal Server Error.
+security:
+  - bearerAuth: []

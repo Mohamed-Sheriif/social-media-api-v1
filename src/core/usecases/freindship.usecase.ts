@@ -34,6 +34,13 @@ export class FriendshipUseCase {
     return friends;
   }
 
+  async getUserFriendsRequest(userId: number): Promise<Friendship[]> {
+    const friendsRequest =
+      await this.friendshipRepository.getUserFriendsRequest(userId);
+
+    return friendsRequest;
+  }
+
   async updateFriendshipStatusToAccepted(
     requesterId: number,
     addresseeId: number

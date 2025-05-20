@@ -107,3 +107,8 @@
 /friendship/{userId}/friends:
   get:
     $ref: './friendship/friendship-get-friends.yaml'
+  delete:
+    $ref: './friendship/friendship-delete.yaml'
+/friendship/friends-request:
+  get:
+    $ref: './friendship/friendship-get-friends-request.yaml'
