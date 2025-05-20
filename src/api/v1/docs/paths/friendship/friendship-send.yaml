@@ -1,0 +1,41 @@
+tags:
+  - Friendship API
+summary: Send friendship request
+description: Send friendship request
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          addresseeId:
+            type: number
+            example: 1
+        required:
+          - addresseeId
+responses:
+  '201':
+    description: Frendship request sent successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Frendship request sent successfully
+            addresseeId:
+              type: integer
+              description: Unique identifier for the addresseeId.
+              example: 1
+  '409':
+    description: Conflict, There already a request!
+  '401':
+    description: Unauthorized. Authentication required.
+  '404':
+    description: User with this Does not exist.
+  '500':
+    description: Internal Server Error.
+security:
+  - bearerAuth: []

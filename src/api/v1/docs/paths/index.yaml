@@ -96,3 +96,8 @@
 /likes/{postId}/unlike:
   post:
     $ref: './like/like-unlike.yaml'
+
+# Friendship API
+/friendship:
+  post:
+    $ref: './friendship/friendship-send.yaml'
