@@ -14,28 +14,28 @@ datasource db {
 }
 
 model User {
-  id                    Int                @id @default(autoincrement())
-  username              String             @unique
-  email                 String             @unique
-  password              String             @map("password_hash")
-  fullName              String?            @map("full_name")
-  bio                   String?
-  avatarUrl             String?            @map("avatar_url")
-  isVerified            Boolean?           @default(false) @map("is_verified")
-  passwordResetCode     String?            @map("password_reset_code")
-  passwordResetExpires  DateTime?          @map("password_reset_code_expiry")
-  passwordResetVerified Boolean?           @map("password_reset_verified")
-  twoFAEnabled          Boolean?           @default(false) @map("two_fa_enabled")
-  twoFASecret           String?            @map("two_fa_secret")
-  createdAt             DateTime           @default(now()) @map("created_at")
-  updatedAt             DateTime           @updatedAt @map("updated_at")
-  Post                  Post[]
-  Comment               Comment[]
-  Like                  Like[]
-  followers             Follow[]           @relation("Follower")
-  followees             Follow[]           @relation("Followee")
-  userRefreshToken      userRefreshToken[]
-  userInvalidTokens     userInvalidToken[]
+  id                     Int                @id @default(autoincrement())
+  username               String             @unique
+  email                  String             @unique
+  password               String             @map("password_hash")
+  fullName               String?            @map("full_name")
+  bio                    String?
+  avatarUrl              String?            @map("avatar_url")
+  isVerified             Boolean?           @default(false) @map("is_verified")
+  passwordResetCode      String?            @map("password_reset_code")
+  passwordResetExpires   DateTime?          @map("password_reset_code_expiry")
+  passwordResetVerified  Boolean?           @map("password_reset_verified")
+  twoFAEnabled           Boolean?           @default(false) @map("two_fa_enabled")
+  twoFASecret            String?            @map("two_fa_secret")
+  createdAt              DateTime           @default(now()) @map("created_at")
+  updatedAt              DateTime           @updatedAt @map("updated_at")
+  Post                   Post[]
+  Comment                Comment[]
+  Like                   Like[]
+  userRefreshToken       userRefreshToken[]
+  userInvalidTokens      userInvalidToken[]
+  sentFriendRequests     Friendship[]       @relation("FriendRequester")
+  receivedFriendRequests Friendship[]       @relation("FriendAddressee")
 
   @@index([username], name: "idx_username")
   @@index([email], name: "idx_email")
@@ -120,17 +120,17 @@ model Like {
   @@map("likes")
 }
 
-model Follow {
-  followerId Int      @map("follower_id")
-  followeeId Int      @map("followee_id")
-  createdAt  DateTime @default(now()) @map("created_at")
-  updatedAt  DateTime @updatedAt @map("updated_at")
+model Friendship {
+  id          Int      @id @default(autoincrement())
+  requesterId Int      @map("requester_id")
+  addresseeId Int      @map("addressee_id")
+  status      String   @default("pending") // "pending" | "accepted" | "declined"
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
-  follower User @relation("Follower", fields: [followerId], references: [id])
-  followee User @relation("Followee", fields: [followeeId], references: [id])
+  requester User @relation("FriendRequester", fields: [requesterId], references: [id])
+  addressee User @relation("FriendAddressee", fields: [addresseeId], references: [id])
 
-  @@id([followerId, followeeId])
-  @@index([followerId], name: "idx_follower_id")
-  @@index([followeeId], name: "idx_followee_id")
-  @@map("follows")
+  @@unique([requesterId, addresseeId]) // prevent duplicate requests
+  @@map("friendships")
 }
