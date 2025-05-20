@@ -27,4 +27,21 @@ export class FriendshipUseCase {
 
     return friendship;
   }
+
+  async updateFriendshipStatusToAccepted(
+    requesterId: number,
+    addresseeId: number
+  ): Promise<void> {
+    await this.friendshipRepository.updateFriendshipStatusToAccepted(
+      requesterId,
+      addresseeId
+    );
+  }
+
+  async deleteFriendship(
+    requesterId: number,
+    addresseeId: number
+  ): Promise<void> {
+    await this.friendshipRepository.deleteFriendship(requesterId, addresseeId);
+  }
 }

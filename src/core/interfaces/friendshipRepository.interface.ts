@@ -7,4 +7,11 @@ export interface IFriendshipRepository {
     requesterId: number,
     addresseeId: number
   ): Promise<Friendship | null>;
+
+  updateFriendshipStatusToAccepted(
+    requesterId: number,
+    addresseeId: number
+  ): Promise<void>;
+
+  deleteFriendship(requesterId: number, addresseeId: number): Promise<void>;
 }

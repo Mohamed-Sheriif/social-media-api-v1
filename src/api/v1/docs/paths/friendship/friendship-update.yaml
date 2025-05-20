@@ -1,0 +1,50 @@
+tags:
+  - Friendship API
+summary: Update friendship request
+description: Update friendship request
+parameters:
+  - name: requesterId
+    in: path
+    description: The requester id to update friend request
+    required: true
+    schema:
+      type: integer
+      example: 1
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          status:
+            type: string
+            description: Status should only be accepted or declined
+            example: 'accepted'
+        required:
+          - status
+responses:
+  '200':
+    description: Frendship request updated successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Frendship request updated successfully
+  '400':
+    description: Status is required and should be either accepted or declined!
+  '401':
+    description: Authentication required.
+  '403':
+    description: You are not authorized to update this request status!
+  '404':
+    description: User with this Does not exist.
+  '409':
+    description: You already friends!
+  '500':
+    description: Internal Server Error.
+security:
+  - bearerAuth: []

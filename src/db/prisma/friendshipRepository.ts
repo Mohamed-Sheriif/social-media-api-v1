@@ -35,4 +35,35 @@ export class FriendshipRepository implements IFriendshipRepository {
 
     return friendship;
   }
+
+  async updateFriendshipStatusToAccepted(
+    requesterId: number,
+    addresseeId: number
+  ): Promise<void> {
+    await this.prisma.friendship.update({
+      where: {
+        requesterId_addresseeId: {
+          requesterId,
+          addresseeId,
+        },
+      },
+      data: {
+        status: 'accepted',
+      },
+    });
+  }
+
+  async deleteFriendship(
+    requesterId: number,
+    addresseeId: number
+  ): Promise<void> {
+    await this.prisma.friendship.delete({
+      where: {
+        requesterId_addresseeId: {
+          requesterId,
+          addresseeId,
+        },
+      },
+    });
+  }
 }

@@ -124,7 +124,7 @@ model Friendship {
   id          Int      @id @default(autoincrement())
   requesterId Int      @map("requester_id")
   addresseeId Int      @map("addressee_id")
-  status      String   @default("pending") // "pending" | "accepted" | "declined"
+  status      String   @default("pending") // "pending" | "accepted" 
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 

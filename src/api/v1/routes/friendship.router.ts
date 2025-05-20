@@ -5,6 +5,8 @@ import asyncHandler from 'express-async-handler';
 import { ApiError } from '@/core/base/apiError';
 import { authenticate } from '@/api/v1/middleware/authenticate';
 import { RequestWithUser } from '@/api/v1/helpers/types';
+import { UpdateFriendshipRequest } from '@/core/validation/freindship/UpdateFriendshipRequest';
+import { validateRequest } from '@/api/v1/middleware/validate';
 import { UserUseCase } from '@/core/usecases/user.usecase';
 import { UserRepository } from '@/db/prisma/userRepository';
 import { FriendshipUseCase } from '@/core/usecases/freindship.usecase';
@@ -20,20 +22,20 @@ export function FriendshipRoute(prisma: PrismaClient): Router {
 
   /**
    * @desc    Send friendship request
-   * @route   POST /api/v1/friendship
+   * @route   POST /api/v1/friendship/:addresseeId
    * @access  Private
    */
   router.post(
-    '/',
+    '/:addresseeId',
     authenticate,
     asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-      const addresseeId = Number(req.body.addresseeId);
+      const addresseeId = Number(req.params.addresseeId);
       const requesterId = (req as RequestWithUser).user.id;
 
       // Check if addressee user exist
       const user = await userUsecase.getUserById(addresseeId);
       if (!user) {
-        return next(new ApiError('User with this Does not exist', 404));
+        return next(new ApiError('User with this does not exist', 404));
       }
 
       // Check if there is already a request between them
@@ -65,6 +67,67 @@ export function FriendshipRoute(prisma: PrismaClient): Router {
       res
         .status(200)
         .json({ message: 'Frendship request sent successfully', freindshipId });
+    })
+  );
+
+  /**
+   * @desc    Update friendship status
+   * @route   PUT /api/v1/friendship/:requesterId/status
+   * @access  Private
+   */
+  router.put(
+    '/:requesterId/status',
+    authenticate,
+    validateRequest(UpdateFriendshipRequest),
+    asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+      const { status } = req.body;
+      const requesterId = Number(req.params.requesterId);
+      const addresseeId = (req as RequestWithUser).user.id;
+
+      // Check if addressee user exist
+      const user = await userUsecase.getUserById(requesterId);
+      if (!user) {
+        return next(new ApiError('User with this id does not exist', 404));
+      }
+
+      // Check if there is already a request between them
+      const freindship = await friendshipUsecase.getFriendshipRequest(
+        requesterId,
+        addresseeId
+      );
+      if (!freindship) {
+        return next(
+          new ApiError('There no friendship request between you and him!', 404)
+        );
+      } else if (freindship.status === 'accepted') {
+        return next(
+          new ApiError('You already friends!', 409)
+        );
+      } else {
+        // Check if the logged in user is the addressee user
+        if (freindship.addresseeId !== addresseeId) {
+          return next(
+            new ApiError(
+              'You are not authorized to update this request status!',
+              403
+            )
+          );
+        }
+      }
+
+      // Check if status id "accepted" then update , else id "declined" just delete
+      if (status === 'accepted') {
+        await friendshipUsecase.updateFriendshipStatusToAccepted(
+          requesterId,
+          addresseeId
+        );
+      } else {
+        await friendshipUsecase.deleteFriendship(requesterId, addresseeId);
+      }
+
+      res
+        .status(200)
+        .json({ message: `Frendship request ${status} successfully` });
     })
   );
 

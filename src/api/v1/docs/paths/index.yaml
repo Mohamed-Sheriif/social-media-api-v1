@@ -98,6 +98,9 @@
     $ref: './like/like-unlike.yaml'
 
 # Friendship API
-/friendship:
+/friendship/{addresseeId}:
   post:
     $ref: './friendship/friendship-send.yaml'
+/friendship/{requesterId}/status:
+  put:
+    $ref: './friendship/friendship-update.yaml'
