@@ -112,3 +112,8 @@
 /friendship/friends-request:
   get:
     $ref: './friendship/friendship-get-friends-request.yaml'
+
+# Group API
+/group:
+  post:
+    $ref: './group/group-create.yaml'

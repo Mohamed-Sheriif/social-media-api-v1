@@ -44,7 +44,7 @@ export function CommentRoute(prisma: PrismaClient): Router {
       });
 
       res
-        .status(200)
+        .status(201)
         .json({ message: 'Comment created successfully', commentId });
     })
   );

@@ -1,0 +1,46 @@
+tags:
+  - Group API
+summary: Create new group
+description: Create new group
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          name:
+            type: string
+            description: Group name
+            example: 'first group'
+          description::
+            type: string
+            description: Group description
+            example: 'group description'
+        required:
+          - name
+responses:
+  '201':
+    description: Group created successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Group created successfully
+            groupId:
+              type: integer
+              description: Unique identifier for the group.
+              example: 1
+  '400':
+    description: Invalid request body or missing required fields.
+  '401':
+    description: Authentication required.
+  '409':
+    description: Group name already exist.
+  '500':
+    description: Internal Server Error.
+security:
+  - bearerAuth: []

@@ -17,6 +17,7 @@ import { PostRoute } from '@/api/v1/routes/post.router';
 import { CommentRoute } from '@/api/v1/routes/comment.router';
 import { LikeRoute } from '@/api/v1/routes/like.router';
 import { FriendshipRoute } from '@/api/v1/routes/friendship.router';
+import { GroupRoute } from '@/api/v1/routes/group.router';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -48,6 +49,7 @@ app.use('/api/v1/post', PostRoute(Prisma));
 app.use('/api/v1/comment', CommentRoute(Prisma));
 app.use('/api/v1/likes', LikeRoute(Prisma));
 app.use('/api/v1/friendship', FriendshipRoute(Prisma));
+app.use('/api/v1/group', GroupRoute(Prisma));
 
 // Not Found Route
 // app.all('*', (req, _res, next) => {
