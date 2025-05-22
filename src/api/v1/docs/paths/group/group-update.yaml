@@ -1,0 +1,75 @@
+tags:
+  - Group API
+summary: Update group
+description: Update group
+parameters:
+  - name: id
+    in: path
+    description: The group id
+    required: true
+    schema:
+      type: integer
+      example: 1
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          name:
+            type: string
+            description: Group name
+            example: 'updated group'
+          description:
+            type: string
+            description: Group description
+            example: 'group description'
+        required:
+          - name
+responses:
+  '200':
+    description: Group updated successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Group updated successfully
+            group:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: The group id
+                  example: 3
+                name:
+                  type: string
+                  example: group elgroup
+                description:
+                  type: string
+                  example: group description
+                created_at:
+                  type: string
+                  format: date-time
+                  example: '2021-01-01T00:00:00.000Z'
+                updated_at:
+                  type: string
+                  format: date-time
+                  example: '2021-01-01T00:00:00.000Z'
+  '400':
+    description: Invalid request body or missing required fields.
+  '401':
+    description: Authentication required.
+  '403':
+    description: You are not authorized to update this group.
+  '404':
+    description: Group not found.
+  '409':
+    description: Group name already exist.
+  '500':
+    description: Internal Server Error.
+security:
+  - bearerAuth: []

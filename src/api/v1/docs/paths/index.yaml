@@ -117,3 +117,8 @@
 /group:
   post:
     $ref: './group/group-create.yaml'
+/group/{id}:
+  put:
+    $ref: './group/group-update.yaml'
+  delete:
+    $ref: './group/group-delete.yaml'

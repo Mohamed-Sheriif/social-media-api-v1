@@ -7,7 +7,6 @@ export class GroupRepository implements IGroupRepository {
   constructor(private prisma: PrismaClient) {}
 
   async createGroup(
-    userId: number,
     group: Omit<Group, 'id' | 'createdAt' | 'updatedAt'>
   ): Promise<number> {
     // Create Group
@@ -15,16 +14,6 @@ export class GroupRepository implements IGroupRepository {
       data: {
         name: group.name,
         description: group.description,
-      },
-    });
-
-    // Create user group member and make him the admin
-    await this.prisma.groupMembership.create({
-      data: {
-        userId,
-        groupId: createdGroup.id,
-        role: 'admin',
-        status: 'accepted',
       },
     });
 
@@ -39,5 +28,40 @@ export class GroupRepository implements IGroupRepository {
     });
 
     return group;
+  }
+
+  async getGroupById(id: number): Promise<Group | null> {
+    const group = await this.prisma.group.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    return group;
+  }
+
+  async updateGroup(
+    id: number,
+    group: Omit<Group, 'id' | 'createdAt' | 'updatedAt'>
+  ): Promise<Group> {
+    const updatedGroup = await this.prisma.group.update({
+      where: {
+        id,
+      },
+      data: {
+        name: group.name,
+        description: group.description,
+      },
+    });
+
+    return updatedGroup;
+  }
+
+  async deleteGroup(id: number): Promise<void> {
+    await this.prisma.group.delete({
+      where: {
+        id,
+      },
+    });
   }
 }
