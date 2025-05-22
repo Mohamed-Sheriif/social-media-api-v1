@@ -36,6 +36,8 @@ model User {
   userInvalidTokens      userInvalidToken[]
   sentFriendRequests     Friendship[]       @relation("FriendRequester")
   receivedFriendRequests Friendship[]       @relation("FriendAddressee")
+  GroupMembership        GroupMembership[]
+  GroupPost              GroupPost[]
 
   @@index([username], name: "idx_username")
   @@index([email], name: "idx_email")
@@ -133,4 +135,48 @@ model Friendship {
 
   @@unique([requesterId, addresseeId]) // prevent duplicate requests
   @@map("friendships")
+}
+
+model Group {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  memberships GroupMembership[]
+  posts       GroupPost[]
+}
+
+model GroupMembership {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  groupId   Int      @map("group_id")
+  role      String   @default("member") // "member" | "admin"
+  status    String   @default("pending") // "pending" | "approved" | "declined"
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user  User  @relation(fields: [userId], references: [id])
+  group Group @relation(fields: [groupId], references: [id])
+
+  @@unique([userId, groupId])
+  @@map("group_memberships")
+}
+
+model GroupPost {
+  id        Int      @id @default(autoincrement())
+  groupId   Int      @map("group_id")
+  userId    Int      @map("user_id")
+  content   String
+  mediaUrl  String?  @map("media_url")
+  status    String   @default("pending") // "pending" | "approved" | "declined"
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  group Group @relation(fields: [groupId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
+
+  @@index([groupId])
+  @@map("group_posts")
 }
