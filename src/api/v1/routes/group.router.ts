@@ -100,11 +100,22 @@ export function GroupRoute(prisma: PrismaClient): Router {
     authenticate,
     asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
       const groupId = Number(req.params.id);
+      const userId = (req as RequestWithUser).user.id;
 
       // Get group by id
       const group = await groupUsecase.getGroupById(groupId);
       if (!group) {
         return next(new ApiError('Group not found!', 404));
+      }
+
+      // Check if the user in this group
+      const groupMembership =
+        await groupMembershipUsecase.getGroupMembershipByGroupIdAndUserId(
+          groupId,
+          userId
+        );
+      if (!groupMembership) {
+        return next(new ApiError('You are not member at this group!', 409));
       }
 
       // Get GroupMembers by group id
@@ -120,6 +131,45 @@ export function GroupRoute(prisma: PrismaClient): Router {
       res.status(200).json({
         message: 'group retrevied successfully',
         group: groupWithMember,
+      });
+    })
+  );
+
+  /**
+   * @desc    Get group members
+   * @route   GET /api/v1/group/:id/members
+   * @access  Private
+   */
+  router.get(
+    '/:id/members',
+    authenticate,
+    asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+      const groupId = Number(req.params.id);
+      const userId = (req as RequestWithUser).user.id;
+
+      // Get group by id
+      const group = await groupUsecase.getGroupById(groupId);
+      if (!group) {
+        return next(new ApiError('Group not found!', 404));
+      }
+
+      // Check if the user in this group
+      const groupMembership =
+        await groupMembershipUsecase.getGroupMembershipByGroupIdAndUserId(
+          groupId,
+          userId
+        );
+      if (!groupMembership) {
+        return next(new ApiError('You are not member at this group!', 409));
+      }
+
+      // Get GroupMembers by group id
+      const groupMembers =
+        await groupMembershipUsecase.getGroupMembershipByGroupId(groupId);
+
+      res.status(200).json({
+        message: 'group members retrevied successfully',
+        members: groupMembers,
       });
     })
   );

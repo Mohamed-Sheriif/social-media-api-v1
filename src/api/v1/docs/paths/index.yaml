@@ -141,3 +141,6 @@
 /group/{id}/leave:
   delete:
     $ref: './group/group-leave.yaml'
+/group/{id}/members:
+  get:
+    $ref: './group/group-member-get.yaml'
