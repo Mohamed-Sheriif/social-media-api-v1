@@ -126,3 +126,9 @@
     $ref: './group/group-update.yaml'
   delete:
     $ref: './group/group-delete.yaml'
+/group/{id}/join:
+  post:
+    $ref: './group/group-request.yaml'
+/group/{id}/request:
+  get:
+    $ref: './group/group-request-get.yaml'

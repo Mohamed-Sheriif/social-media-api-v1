@@ -38,4 +38,21 @@ export class GroupMembershipUseCase {
 
     return groupMembership;
   }
+
+  async getGroupRequests(groupId: number): Promise<any> {
+    const groupRequests = await this.groupMembershipRepository.getGroupRequests(
+      groupId
+    );
+
+    return groupRequests;
+  }
+
+  async requestToJoinGroup(userId: number, groupId: number): Promise<number> {
+    const requestId = await this.groupMembershipRepository.requestToJoinGroup(
+      userId,
+      groupId
+    );
+
+    return requestId;
+  }
 }

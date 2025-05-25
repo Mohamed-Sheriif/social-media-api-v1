@@ -1,0 +1,37 @@
+tags:
+  - Group API
+summary: Request to join group
+description: Request to join group
+parameters:
+  - name: id
+    in: path
+    description: The group id
+    required: true
+    schema:
+      type: integer
+      example: 1
+responses:
+  '201':
+    description: Request created successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Request created successfully
+            requestId:
+              type: integer
+              description: Unique identifier for the request.
+              example: 1
+  '401':
+    description: Authentication required.
+  '404':
+    description: Group not found.
+  '409':
+    description: You already requested before.
+  '500':
+    description: Internal Server Error.
+security:
+  - bearerAuth: []

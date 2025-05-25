@@ -1,0 +1,48 @@
+tags:
+  - Group API
+summary: Get group request
+description: Get group request
+parameters:
+  - name: id
+    in: path
+    description: The group id
+    required: true
+    schema:
+      type: integer
+      example: 1
+responses:
+  '200':
+    description: Group requests retreived successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Group requests retreived successfully
+            groupRequest:
+              type: object
+              properties:
+                userId:
+                  type: integer
+                  example: 1
+                user:
+                  type: object
+                  properties:
+                    username:
+                      type: string
+                      example: mohamed sherif
+                status:
+                  type: string
+                  example: pending
+  '401':
+    description: Authentication required.
+  '403':
+    description: You are not authorized to view requests of this group.
+  '404':
+    description: Group not found.
+  '500':
+    description: Internal Server Error.
+security:
+  - bearerAuth: []

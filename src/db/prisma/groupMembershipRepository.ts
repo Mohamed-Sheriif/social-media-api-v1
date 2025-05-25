@@ -68,4 +68,37 @@ export class GroupMembershipRepository implements IGroupMembershipRepository {
 
     return groupMembership;
   }
+
+  async getGroupRequests(groupId: number): Promise<any> {
+    const groupRequests = await this.prisma.groupMembership.findMany({
+      where: {
+        groupId,
+        status: 'pending',
+      },
+      select: {
+        userId: true,
+        user: {
+          select: {
+            username: true,
+          },
+        },
+        status: true,
+      },
+    });
+
+    return groupRequests;
+  }
+
+  async requestToJoinGroup(userId: number, groupId: number): Promise<number> {
+    const request = await this.prisma.groupMembership.create({
+      data: {
+        userId,
+        groupId,
+        status: 'pending',
+        role: 'member',
+      },
+    });
+
+    return request.id;
+  }
 }
