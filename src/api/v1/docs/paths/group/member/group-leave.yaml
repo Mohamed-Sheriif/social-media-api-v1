@@ -1,7 +1,7 @@
 tags:
-  - Group API
-summary: Decline group request
-description: Decline group request
+  - Group Members API
+summary: Leave group
+description: Leave group
 parameters:
   - name: id
     in: path
@@ -10,16 +10,9 @@ parameters:
     schema:
       type: integer
       example: 1
-  - name: requestId
-    in: path
-    description: The request id
-    required: true
-    schema:
-      type: integer
-      example: 2
 responses:
   '200':
-    description: Group request declined successfully.
+    description: Group leaved successfully.
     content:
       application/json:
         schema:
@@ -27,13 +20,13 @@ responses:
           properties:
             message:
               type: string
-              example: Group request declined successfully.
+              example: Group leaved successfully.
   '401':
     description: Authentication required.
-  '403':
-    description: Unauthorized.
+  '409':
+    description: You are not member at this group!.
   '404':
-    description: Group or request not found.
+    description: Group not found.
   '500':
     description: Internal Server Error.
 security:

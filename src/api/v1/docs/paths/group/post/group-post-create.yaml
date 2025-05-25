@@ -1,0 +1,53 @@
+tags:
+  - Group Posts API
+summary: Create new post in group
+description: Create new post in group
+parameters:
+  - name: id
+    in: path
+    description: The group id
+    required: true
+    schema:
+      type: integer
+      example: 1
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          content:
+            type: string
+            description: Post content
+            example: 'this is my first post'
+          mediaUrl:
+            type: string
+            example: 'https://example.com/image.jpg'
+        required:
+          - content
+responses:
+  '201':
+    description: Post created and pending approval successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Post created and pending approval successfully
+            groupPostId:
+              type: integer
+              description: Unique identifier for the group post.
+              example: 1
+  '400':
+    description: Invalid request body or missing required fields.
+  '401':
+    description: Authentication required.
+  '409':
+    description: You are not member at this group!
+  '500':
+    description: Internal Server Error
+security:
+  - bearerAuth: []

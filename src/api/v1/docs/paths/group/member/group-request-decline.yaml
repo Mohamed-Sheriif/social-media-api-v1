@@ -1,7 +1,7 @@
 tags:
-  - Group API
-summary: Request to join group
-description: Request to join group
+  - Group Members API
+summary: Decline group request
+description: Decline group request
 parameters:
   - name: id
     in: path
@@ -10,9 +10,16 @@ parameters:
     schema:
       type: integer
       example: 1
+  - name: requestId
+    in: path
+    description: The request id
+    required: true
+    schema:
+      type: integer
+      example: 2
 responses:
-  '201':
-    description: Request created successfully
+  '200':
+    description: Group request declined successfully.
     content:
       application/json:
         schema:
@@ -20,17 +27,13 @@ responses:
           properties:
             message:
               type: string
-              example: Request created successfully
-            requestId:
-              type: integer
-              description: Unique identifier for the request.
-              example: 1
+              example: Group request declined successfully.
   '401':
     description: Authentication required.
+  '403':
+    description: Unauthorized.
   '404':
-    description: Group not found.
-  '409':
-    description: You already requested before.
+    description: Group or request not found.
   '500':
     description: Internal Server Error.
 security:

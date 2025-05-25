@@ -126,21 +126,28 @@
     $ref: './group/group-update.yaml'
   delete:
     $ref: './group/group-delete.yaml'
+
+# Group Members API
 /group/{id}/join:
   post:
-    $ref: './group/group-request.yaml'
+    $ref: './group/member/group-request.yaml'
 /group/{id}/join/{requestId}/approve:
   put:
-    $ref: './group/group-request-approve.yaml'
+    $ref: './group/member/group-request-approve.yaml'
 /group/{id}/join/{requestId}/decline:
   put:
-    $ref: './group/group-request-decline.yaml'
+    $ref: './group/member/group-request-decline.yaml'
 /group/{id}/request:
   get:
-    $ref: './group/group-request-get.yaml'
+    $ref: './group/member/group-request-get.yaml'
 /group/{id}/leave:
   delete:
-    $ref: './group/group-leave.yaml'
+    $ref: './group/member/group-leave.yaml'
 /group/{id}/members:
   get:
-    $ref: './group/group-member-get.yaml'
+    $ref: './group/member/group-member-get.yaml'
+
+# Group Posts API
+/group/{id}/post:
+  post:
+    $ref: './group/post/group-post-create.yaml'

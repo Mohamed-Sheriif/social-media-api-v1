@@ -7,10 +7,13 @@ import { authenticate } from '@/api/v1/middleware/authenticate';
 import { RequestWithUser } from '@/api/v1/helpers/types';
 import { validateRequest } from '@/api/v1/middleware/validate';
 import { CreateGroupRequest } from '@/core/validation/group/CreateGroupRequest';
+import { CreateGroupPostRequest } from '@/core/validation/group/post/CreateGroupPostRequest';
 import { GroupUseCase } from '@/core/usecases/group.usecase';
 import { GroupRepository } from '@/db/prisma/groupRepository';
 import { GroupMembershipUseCase } from '@/core/usecases/groupMembership.usecase';
 import { GroupMembershipRepository } from '@/db/prisma/groupMembershipRepository';
+import { GroupPostUseCase } from '@/core/usecases/groupPost.usecase';
+import { GroupPostRepository } from '@/db/prisma/groupPostRepository';
 
 export function GroupRoute(prisma: PrismaClient): Router {
   const router = Router();
@@ -18,7 +21,11 @@ export function GroupRoute(prisma: PrismaClient): Router {
   const groupMembershipUsecase = new GroupMembershipUseCase(
     new GroupMembershipRepository(prisma)
   );
+  const groupPostUsecase = new GroupPostUseCase(
+    new GroupPostRepository(prisma)
+  );
 
+  // GROUPS
   /**
    * @desc    Create new group
    * @route   POST /api/v1/group
@@ -275,6 +282,7 @@ export function GroupRoute(prisma: PrismaClient): Router {
     })
   );
 
+  // GROUP MEMBERS
   /**
    * @desc    Request to join group
    * @route   POST /api/v1/group/:id/join
@@ -574,5 +582,62 @@ export function GroupRoute(prisma: PrismaClient): Router {
     })
   );
 
+  // GROUP POSTS
+  /**
+   * @desc    Create new group post
+   * @route   POST /api/v1/group/:id/post
+   * @access  Private
+   */
+  router.post(
+    '/:id/post',
+    authenticate,
+    validateRequest(CreateGroupPostRequest),
+    asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+      const { content, mediaUrl } = req.body;
+      const userId = (req as RequestWithUser).user.id;
+      const groupId = Number(req.params.id);
+
+      // Check if group exist
+      const group = await groupUsecase.getGroupById(groupId);
+      if (!group) {
+        return next(new ApiError('Group not found!', 404));
+      }
+
+      // Check if the user in this group
+      const groupMembership =
+        await groupMembershipUsecase.getGroupMembershipByGroupIdAndUserId(
+          groupId,
+          userId
+        );
+      if (!groupMembership || groupMembership.status !== 'accepted') {
+        return next(new ApiError('You are not member at this group!', 409));
+      }
+
+      // Create post
+      let groupPostId;
+      if (groupMembership.role === 'admin') {
+        groupPostId = await groupPostUsecase.createGroupPost({
+          userId,
+          groupId,
+          content,
+          mediaUrl,
+          status: 'accepted',
+        });
+      } else {
+        groupPostId = await groupPostUsecase.createGroupPost({
+          userId,
+          groupId,
+          content,
+          mediaUrl,
+          status: 'pending',
+        });
+      }
+
+      res.status(200).json({
+        message: 'Group post created successfully',
+        groupPostId,
+      });
+    })
+  );
   return router;
 }

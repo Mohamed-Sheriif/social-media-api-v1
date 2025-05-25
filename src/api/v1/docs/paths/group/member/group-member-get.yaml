@@ -1,5 +1,5 @@
 tags:
-  - Group API
+  - Group Members API
 summary: Get group members
 description: Get group members
 parameters:
