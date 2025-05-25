@@ -24,6 +24,12 @@ export class GroupUseCase {
     return groupMembership;
   }
 
+  async getGroupsById(groupsId: number[]): Promise<Group[]> {
+    const groups = await this.groupRepository.getGroupsById(groupsId);
+
+    return groups;
+  }
+
   async updateGroup(
     id: number,
     group: Omit<Group, 'id' | 'createdAt' | 'updatedAt'>

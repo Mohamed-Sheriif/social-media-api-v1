@@ -40,6 +40,18 @@ export class GroupRepository implements IGroupRepository {
     return group;
   }
 
+  async getGroupsById(groupsId: number[]): Promise<Group[]> {
+    const groups = await this.prisma.group.findMany({
+      where: {
+        id: {
+          in: groupsId,
+        },
+      },
+    });
+
+    return groups;
+  }
+
   async updateGroup(
     id: number,
     group: Omit<Group, 'id' | 'createdAt' | 'updatedAt'>

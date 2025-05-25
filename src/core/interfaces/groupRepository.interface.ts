@@ -7,6 +7,8 @@ export interface IGroupRepository {
 
   getGroupById(id: number): Promise<Group | null>;
 
+  getGroupsById(groupsId: number[]): Promise<Group[]>;
+
   getGroupByName(name: string): Promise<Group | null>;
 
   updateGroup(

@@ -117,6 +117,8 @@
 /group:
   post:
     $ref: './group/group-create.yaml'
+  get:
+    $ref: './group/group-get.yaml'
 /group/{id}:
   put:
     $ref: './group/group-update.yaml'

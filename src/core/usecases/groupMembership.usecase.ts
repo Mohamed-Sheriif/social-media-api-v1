@@ -10,6 +10,13 @@ export class GroupMembershipUseCase {
     await this.groupMembershipRepository.addUserToGroup(groupMembership);
   }
 
+  async getGroupMemberByUserId(userId: number): Promise<GroupMembership[]> {
+    const groupMembers =
+      await this.groupMembershipRepository.getGroupMemberByUserId(userId);
+
+    return groupMembers;
+  }
+
   async getGroupMembershipByGroupIdAndUserId(
     groupId: number,
     userId: number

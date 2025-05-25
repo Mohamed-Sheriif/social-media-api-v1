@@ -5,6 +5,8 @@ export interface IGroupMembershipRepository {
     groupMembership: Omit<GroupMembership, 'id' | 'createdAt' | 'updatedAt'>
   ): Promise<void>;
 
+  getGroupMemberByUserId(userId: number): Promise<GroupMembership[]>;
+
   getGroupMembershipByGroupIdAndUserId(
     groupId: number,
     userId: number

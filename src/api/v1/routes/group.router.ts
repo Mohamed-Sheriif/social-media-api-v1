@@ -57,6 +57,40 @@ export function GroupRoute(prisma: PrismaClient): Router {
   );
 
   /**
+   * @desc    Get user groups
+   * @route   GET /api/v1/group
+   * @access  Private
+   */
+  router.get(
+    '/',
+    authenticate,
+    asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
+      const userId = (req as RequestWithUser).user.id;
+
+      // Get GroupMembers by user id
+      const groupMembers = await groupMembershipUsecase.getGroupMemberByUserId(
+        userId
+      );
+      if (groupMembers.length === 0) {
+        res
+          .status(200)
+          .json({ message: 'groups retrevied successfully', groups: [] });
+      }
+
+      const groupsId = groupMembers.map(groupMember => {
+        return groupMember.groupId;
+      });
+
+      // Get groups by id
+      const groups = await groupUsecase.getGroupsById(groupsId);
+
+      res
+        .status(200)
+        .json({ message: 'groups retrevied successfully', groups });
+    })
+  );
+
+  /**
    * @desc    Update group
    * @route   PUT /api/v1/group/:id
    * @access  Private
