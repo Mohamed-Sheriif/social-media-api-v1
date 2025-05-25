@@ -129,6 +129,12 @@
 /group/{id}/join:
   post:
     $ref: './group/group-request.yaml'
+/group/{id}/join/{requestId}/approve:
+  put:
+    $ref: './group/group-request-approve.yaml'
+/group/{id}/join/{requestId}/decline:
+  put:
+    $ref: './group/group-request-decline.yaml'
 /group/{id}/request:
   get:
     $ref: './group/group-request-get.yaml'

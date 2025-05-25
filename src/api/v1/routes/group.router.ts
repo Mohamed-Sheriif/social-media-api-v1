@@ -270,8 +270,174 @@ export function GroupRoute(prisma: PrismaClient): Router {
   );
 
   /**
+   * @desc    Approve group request
+   * @route   PUT /api/v1/group/:id/join/:requestId/approve
+   * @access  Private
+   */
+  router.put(
+    '/:id/join/:requestId/approve',
+    authenticate,
+    asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+      const userId = (req as RequestWithUser).user.id;
+      const groupId = Number(req.params.id);
+      const requestId = Number(req.params.requestId);
+
+      // Check if group exist
+      const group = await groupUsecase.getGroupById(groupId);
+      if (!group) {
+        return next(new ApiError('Group not found!', 404));
+      }
+
+      // Check if the user in this group and is the admin
+      const groupMembership =
+        await groupMembershipUsecase.getGroupMembershipByGroupIdAndUserId(
+          groupId,
+          userId
+        );
+      if (!groupMembership) {
+        return next(new ApiError('You are not member at this group!', 403));
+      } else if (
+        !(
+          groupMembership.role == 'admin' &&
+          groupMembership.status == 'accepted'
+        )
+      ) {
+        return next(
+          new ApiError(
+            'You are not authorized to update requests of this group!',
+            403
+          )
+        );
+      }
+
+      const request = await groupMembershipUsecase.getGroupRequestByRequestId(
+        requestId
+      );
+      if (!request) {
+        return next(new ApiError('request not found!', 404));
+      }
+
+      // Approve group request
+      await groupMembershipUsecase.approveGroupRequest(requestId);
+
+      res.status(200).json({
+        message: 'Group request approved successfully',
+      });
+    })
+  );
+
+  /**
+   * @desc    Decline group request
+   * @route   PUT /api/v1/group/:id/join/:requestId/decline
+   * @access  Private
+   */
+  router.put(
+    '/:id/join/:requestId/decline',
+    authenticate,
+    asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+      const userId = (req as RequestWithUser).user.id;
+      const groupId = Number(req.params.id);
+      const requestId = Number(req.params.requestId);
+
+      // Check if group exist
+      const group = await groupUsecase.getGroupById(groupId);
+      if (!group) {
+        return next(new ApiError('Group not found!', 404));
+      }
+
+      // Check if the user in this group and is the admin
+      const groupMembership =
+        await groupMembershipUsecase.getGroupMembershipByGroupIdAndUserId(
+          groupId,
+          userId
+        );
+      if (!groupMembership) {
+        return next(new ApiError('You are not member at this group!', 403));
+      } else if (
+        !(
+          groupMembership.role == 'admin' &&
+          groupMembership.status == 'accepted'
+        )
+      ) {
+        return next(
+          new ApiError(
+            'You are not authorized to update requests of this group!',
+            403
+          )
+        );
+      }
+
+      const request = await groupMembershipUsecase.getGroupRequestByRequestId(
+        requestId
+      );
+      if (!request) {
+        return next(new ApiError('request not found!', 404));
+      }
+
+      // delete group request
+      await groupMembershipUsecase.deleteGroupRequestByRequestId(requestId);
+
+      res.status(200).json({
+        message: 'Group request declined successfully',
+      });
+    })
+  );
+
+  /**
    * @desc    Get group requests
    * @route   GET /api/v1/group/:id/request
+   * @access  Private
+   */
+  router.get(
+    '/:id/request',
+    authenticate,
+    asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+      const userId = (req as RequestWithUser).user.id;
+      const groupId = Number(req.params.id);
+
+      // Check if group exist
+      const group = await groupUsecase.getGroupById(groupId);
+      if (!group) {
+        return next(new ApiError('Group not found!', 404));
+      }
+
+      // Check if the user in this group and is the admin
+      const groupMembership =
+        await groupMembershipUsecase.getGroupMembershipByGroupIdAndUserId(
+          groupId,
+          userId
+        );
+      if (!groupMembership) {
+        return next(new ApiError('You are not member at this group!', 403));
+      } else if (
+        !(
+          groupMembership.role == 'admin' &&
+          groupMembership.status == 'accepted'
+        )
+      ) {
+        return next(
+          new ApiError(
+            'You are not authorized to view requests of this group!',
+            403
+          )
+        );
+      }
+
+      // Get all request of this group
+      const groupRequest = await groupMembershipUsecase.getGroupRequests(
+        groupId
+      );
+
+      res.status(200).json({
+        message: 'Group requests retrieved successfully',
+        groupRequest,
+      });
+    })
+  );
+
+  /**
+   * @desc    Approve group request
+   * @route   GET /api/v1/group/:id/join/:requestId/approve
    * @access  Private
    */
   router.get(

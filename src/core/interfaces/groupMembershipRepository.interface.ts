@@ -16,5 +16,13 @@ export interface IGroupMembershipRepository {
 
   getGroupRequests(groupId: number): Promise<GroupMembership[]>;
 
+  getGroupRequestByRequestId(
+    requestId: number
+  ): Promise<GroupMembership | null>;
+
   requestToJoinGroup(userId: number, groupId: number): Promise<number>;
+
+  approveGroupRequest(requestId: number): Promise<void>;
+
+  deleteGroupRequestByRequestId(requestId: number): Promise<void>;
 }

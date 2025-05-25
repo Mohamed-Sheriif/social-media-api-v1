@@ -89,6 +89,18 @@ export class GroupMembershipRepository implements IGroupMembershipRepository {
     return groupRequests;
   }
 
+  async getGroupRequestByRequestId(
+    requestId: number
+  ): Promise<GroupMembership | null> {
+    const request = await this.prisma.groupMembership.findUnique({
+      where: {
+        id: requestId,
+      },
+    });
+
+    return request;
+  }
+
   async requestToJoinGroup(userId: number, groupId: number): Promise<number> {
     const request = await this.prisma.groupMembership.create({
       data: {
@@ -100,5 +112,24 @@ export class GroupMembershipRepository implements IGroupMembershipRepository {
     });
 
     return request.id;
+  }
+
+  async approveGroupRequest(requestId: number): Promise<void> {
+    await this.prisma.groupMembership.update({
+      where: {
+        id: requestId,
+      },
+      data: {
+        status: 'accepted',
+      },
+    });
+  }
+
+  async deleteGroupRequestByRequestId(requestId: number): Promise<void> {
+    await this.prisma.groupMembership.delete({
+      where: {
+        id: requestId,
+      },
+    });
   }
 }

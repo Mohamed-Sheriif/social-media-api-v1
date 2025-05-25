@@ -47,6 +47,17 @@ export class GroupMembershipUseCase {
     return groupRequests;
   }
 
+  async getGroupRequestByRequestId(
+    requestId: number
+  ): Promise<GroupMembership | null> {
+    const request =
+      await this.groupMembershipRepository.getGroupRequestByRequestId(
+        requestId
+      );
+
+    return request;
+  }
+
   async requestToJoinGroup(userId: number, groupId: number): Promise<number> {
     const requestId = await this.groupMembershipRepository.requestToJoinGroup(
       userId,
@@ -54,5 +65,15 @@ export class GroupMembershipUseCase {
     );
 
     return requestId;
+  }
+
+  async approveGroupRequest(requestId: number): Promise<void> {
+    await this.groupMembershipRepository.approveGroupRequest(requestId);
+  }
+
+  async deleteGroupRequestByRequestId(requestId: number): Promise<void> {
+    await this.groupMembershipRepository.deleteGroupRequestByRequestId(
+      requestId
+    );
   }
 }
