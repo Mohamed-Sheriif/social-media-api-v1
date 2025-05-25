@@ -21,4 +21,32 @@ export class GroupPostRepository implements IGroupPostRepository {
 
     return createdGroupPost.id;
   }
+
+  async getGroupApprovedPosts(groupId: number): Promise<any> {
+    const groupPosts = await this.prisma.groupPost.findMany({
+      where: {
+        groupId,
+        status: 'accepted',
+      },
+      select: {
+        id: true,
+        groupId: true,
+        user: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+        content: true,
+        mediaUrl: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    });
+
+    return groupPosts;
+  }
 }

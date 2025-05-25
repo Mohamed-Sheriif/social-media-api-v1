@@ -1,0 +1,73 @@
+tags:
+  - Group Posts API
+summary: Get group posts
+description: Get group posts
+parameters:
+  - name: id
+    in: path
+    description: The group id
+    required: true
+    schema:
+      type: integer
+      example: 1
+responses:
+  '200':
+    description: Group posts retrieved successflly
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Group posts retrieved successflly
+            groupPosts:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The post id
+                    example: 1
+                  groupId:
+                    type: integer
+                    description: The group id
+                    example: 1
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: The user id
+                        example: 1
+                      usename:
+                        type: string
+                        example: mohamed sherif
+                  content:
+                    type: string
+                    example: this is my first post
+                  mediaUrl:
+                    type: string
+                    example: https://example.com/image.jpg
+                  status:
+                    type: string
+                    example: accepted
+                  created_at:
+                    type: string
+                    format: date-time
+                    example: '2021-01-01T00:00:00.000Z'
+                  updated_at:
+                    type: string
+                    format: date-time
+                    example: '2021-01-01T00:00:00.000Z'
+  '400':
+    description: Bad request.
+  '401':
+    description: Authenctication failed.
+  '409':
+    description: You are not member at this group!
+  '500':
+    description: Internal server error.
+security:
+  - bearerAuth: []

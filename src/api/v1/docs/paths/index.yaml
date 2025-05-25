@@ -151,3 +151,5 @@
 /group/{id}/post:
   post:
     $ref: './group/post/group-post-create.yaml'
+  get:
+    $ref: './group/post/group-post-get.yaml'

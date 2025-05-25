@@ -639,5 +639,41 @@ export function GroupRoute(prisma: PrismaClient): Router {
       });
     })
   );
+
+  /**
+   * @desc    Get group posts
+   * @route   GET /api/v1/group/:id/post
+   * @access  Private
+   */
+  router.get(
+    '/:id/post',
+    authenticate,
+    asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+      const userId = (req as RequestWithUser).user.id;
+      const groupId = Number(req.params.id);
+
+      // Check if group exist
+      const group = await groupUsecase.getGroupById(groupId);
+      if (!group) {
+        return next(new ApiError('Group not found!', 404));
+      }
+
+      // Check if the user in this group
+      const groupMembership =
+        await groupMembershipUsecase.getGroupMembershipByGroupIdAndUserId(
+          groupId,
+          userId
+        );
+      if (!groupMembership || groupMembership.status !== 'accepted') {
+        return next(new ApiError('You are not member at this group!', 409));
+      }
+
+      const groupPosts = await groupPostUsecase.getGroupApprovedPosts(groupId);
+
+      res
+        .status(200)
+        .json({ message: 'Group posts retrieved successflly', groupPosts });
+    })
+  );
   return router;
 }

@@ -13,4 +13,12 @@ export class GroupPostUseCase {
 
     return groupPostId;
   }
+
+  async getGroupApprovedPosts(groupId: number): Promise<GroupPost[]> {
+    const groupPosts = await this.groupPostRepository.getGroupApprovedPosts(
+      groupId
+    );
+
+    return groupPosts;
+  }
 }
