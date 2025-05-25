@@ -132,4 +132,15 @@ export class GroupMembershipRepository implements IGroupMembershipRepository {
       },
     });
   }
+
+  async leaveGroup(userId: number, groupId: number): Promise<void> {
+    await this.prisma.groupMembership.delete({
+      where: {
+        userId_groupId: {
+          userId,
+          groupId,
+        },
+      },
+    });
+  }
 }

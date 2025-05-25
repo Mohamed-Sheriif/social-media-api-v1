@@ -384,6 +384,43 @@ export function GroupRoute(prisma: PrismaClient): Router {
   );
 
   /**
+   * @desc    Leave group
+   * @route   DELETE /api/v1/group/:id/leave
+   * @access  Private
+   */
+  router.delete(
+    '/:id/leave',
+    authenticate,
+    asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+      const userId = (req as RequestWithUser).user.id;
+      const groupId = Number(req.params.id);
+
+      // Check if group exist
+      const group = await groupUsecase.getGroupById(groupId);
+      if (!group) {
+        return next(new ApiError('Group not found!', 404));
+      }
+
+      // Check if the user in this group
+      const groupMembership =
+        await groupMembershipUsecase.getGroupMembershipByGroupIdAndUserId(
+          groupId,
+          userId
+        );
+      if (!groupMembership) {
+        return next(new ApiError('You are not member at this group!', 409));
+      }
+
+      // delete group request
+      await groupMembershipUsecase.leaveGroup(userId, groupId);
+
+      res.status(200).json({
+        message: 'Group leaved successfully',
+      });
+    })
+  );
+
+  /**
    * @desc    Get group requests
    * @route   GET /api/v1/group/:id/request
    * @access  Private

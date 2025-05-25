@@ -138,3 +138,6 @@
 /group/{id}/request:
   get:
     $ref: './group/group-request-get.yaml'
+/group/{id}/leave:
+  delete:
+    $ref: './group/group-leave.yaml'

@@ -25,4 +25,6 @@ export interface IGroupMembershipRepository {
   approveGroupRequest(requestId: number): Promise<void>;
 
   deleteGroupRequestByRequestId(requestId: number): Promise<void>;
+
+  leaveGroup(userId: number, groupId: number): Promise<void>;
 }

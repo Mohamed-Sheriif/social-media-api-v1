@@ -76,4 +76,8 @@ export class GroupMembershipUseCase {
       requestId
     );
   }
+
+  async leaveGroup(userId: number, groupId: number): Promise<void> {
+    await this.groupMembershipRepository.leaveGroup(userId, groupId);
+  }
 }
