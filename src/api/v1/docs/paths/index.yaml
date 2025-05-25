@@ -120,6 +120,8 @@
   get:
     $ref: './group/group-get.yaml'
 /group/{id}:
+  get:
+    $ref: './group/group-get-with-member.yaml'
   put:
     $ref: './group/group-update.yaml'
   delete:

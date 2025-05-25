@@ -17,6 +17,15 @@ export class GroupMembershipUseCase {
     return groupMembers;
   }
 
+  async getGroupMembershipByGroupId(
+    groupId: number
+  ): Promise<GroupMembership[]> {
+    const groupMembers =
+      await this.groupMembershipRepository.getGroupMembershipByGroupId(groupId);
+
+    return groupMembers;
+  }
+
   async getGroupMembershipByGroupIdAndUserId(
     groupId: number,
     userId: number

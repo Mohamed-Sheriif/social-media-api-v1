@@ -1,0 +1,71 @@
+tags:
+  - Group API
+summary: Get group with member
+description: Get group with member
+parameters:
+  - name: id
+    in: path
+    description: The group id
+    required: true
+    schema:
+      type: integer
+      example: 1
+responses:
+  '200':
+    description: Group retrieved successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Group retrieved successfully
+            group:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The group id
+                    example: 3
+                  name:
+                    type: string
+                    example: group elgroup
+                  description:
+                    type: string
+                    example: group description
+                  created_at:
+                    type: string
+                    format: date-time
+                    example: '2021-01-01T00:00:00.000Z'
+                  updated_at:
+                    type: string
+                    format: date-time
+                    example: '2021-01-01T00:00:00.000Z'
+                  members:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        userId:
+                          type: integer
+                          example: 1
+                        user:
+                          type: object
+                          properties:
+                            username:
+                              type: string
+                              example: mohamed sherif
+                        role:
+                          type: string
+                          example: admin
+  '401':
+    description: Authentication required.
+  '404':
+    description: Group not found.
+  '500':
+    description: Internal Server Error.
+security:
+  - bearerAuth: []

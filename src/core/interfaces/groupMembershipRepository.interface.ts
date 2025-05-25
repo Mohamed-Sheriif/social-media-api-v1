@@ -7,6 +7,8 @@ export interface IGroupMembershipRepository {
 
   getGroupMemberByUserId(userId: number): Promise<GroupMembership[]>;
 
+  getGroupMembershipByGroupId(groupId: number): Promise<GroupMembership[]>;
+
   getGroupMembershipByGroupIdAndUserId(
     groupId: number,
     userId: number

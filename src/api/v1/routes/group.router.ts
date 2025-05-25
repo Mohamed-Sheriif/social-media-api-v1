@@ -91,6 +91,40 @@ export function GroupRoute(prisma: PrismaClient): Router {
   );
 
   /**
+   * @desc    Get group
+   * @route   GET /api/v1/group/:id
+   * @access  Private
+   */
+  router.get(
+    '/:id',
+    authenticate,
+    asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+      const groupId = Number(req.params.id);
+
+      // Get group by id
+      const group = await groupUsecase.getGroupById(groupId);
+      if (!group) {
+        return next(new ApiError('Group not found!', 404));
+      }
+
+      // Get GroupMembers by group id
+      const groupMembers =
+        await groupMembershipUsecase.getGroupMembershipByGroupId(groupId);
+
+      // return group joined with members
+      const groupWithMember = {
+        ...group,
+        members: groupMembers,
+      };
+
+      res.status(200).json({
+        message: 'group retrevied successfully',
+        group: groupWithMember,
+      });
+    })
+  );
+
+  /**
    * @desc    Update group
    * @route   PUT /api/v1/group/:id
    * @access  Private

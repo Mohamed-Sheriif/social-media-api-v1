@@ -13,7 +13,7 @@ requestBody:
             type: string
             description: Group name
             example: 'first group'
-          description::
+          description:
             type: string
             description: Group description
             example: 'group description'
