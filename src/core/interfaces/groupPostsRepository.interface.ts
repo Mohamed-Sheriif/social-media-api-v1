@@ -6,4 +6,12 @@ export interface IGroupPostRepository {
   ): Promise<number>;
 
   getGroupApprovedPosts(groupId: number): Promise<GroupPost[]>;
+
+  getGroupPendingPosts(groupId: number): Promise<GroupPost[]>;
+
+  getGroupPostById(postId: number): Promise<GroupPost | null>;
+
+  approveGroupPost(postId: number): Promise<void>;
+
+  deleteGroupPost(postId: number): Promise<void>;
 }

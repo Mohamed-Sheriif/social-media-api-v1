@@ -153,3 +153,15 @@
     $ref: './group/post/group-post-create.yaml'
   get:
     $ref: './group/post/group-post-get.yaml'
+/group/{id}/post/pending:
+  get:
+    $ref: './group/post/group-post-pending-get.yaml'
+/group/{id}/post/{postId}/approve:
+  put:
+    $ref: './group/post/group-post-request-approve.yaml'
+/group/{id}/post/{postId}/decline:
+  put:
+    $ref: './group/post/group-post-request-decline.yaml'
+/group/{id}/post/{postId}:
+  delete:
+    $ref: './group/post/group-post-delete.yaml'

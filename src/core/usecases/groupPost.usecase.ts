@@ -21,4 +21,25 @@ export class GroupPostUseCase {
 
     return groupPosts;
   }
+
+  async getGroupPendingPosts(groupId: number): Promise<GroupPost[]> {
+    const groupPendingPosts =
+      await this.groupPostRepository.getGroupPendingPosts(groupId);
+
+    return groupPendingPosts;
+  }
+
+  async getGroupPostById(postId: number): Promise<GroupPost | null> {
+    const groupPost = await this.groupPostRepository.getGroupPostById(postId);
+
+    return groupPost;
+  }
+
+  async approveGroupPost(postId: number): Promise<void> {
+    await this.groupPostRepository.approveGroupPost(postId);
+  }
+
+  async deleteGroupPost(postId: number): Promise<void> {
+    await this.groupPostRepository.deleteGroupPost(postId);
+  }
 }

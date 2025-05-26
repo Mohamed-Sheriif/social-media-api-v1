@@ -43,10 +43,67 @@ export class GroupPostRepository implements IGroupPostRepository {
         updatedAt: true,
       },
       orderBy: {
-        createdAt: 'asc',
+        createdAt: 'desc',
       },
     });
 
     return groupPosts;
+  }
+
+  async getGroupPendingPosts(groupId: number): Promise<any> {
+    const groupPendingPosts = await this.prisma.groupPost.findMany({
+      where: {
+        groupId,
+        status: 'pending',
+      },
+      select: {
+        id: true,
+        groupId: true,
+        user: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+        content: true,
+        mediaUrl: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    });
+
+    return groupPendingPosts;
+  }
+
+  async getGroupPostById(postId: number): Promise<GroupPost | null> {
+    const groupPost = await this.prisma.groupPost.findUnique({
+      where: {
+        id: postId,
+      },
+    });
+
+    return groupPost;
+  }
+
+  async approveGroupPost(postId: number): Promise<void> {
+    await this.prisma.groupPost.update({
+      where: {
+        id: postId,
+      },
+      data: {
+        status: 'accepted',
+      },
+    });
+  }
+
+  async deleteGroupPost(postId: number): Promise<void> {
+    await this.prisma.groupPost.delete({
+      where: {
+        id: postId,
+      },
+    });
   }
 }
