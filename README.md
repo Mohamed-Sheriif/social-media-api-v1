@@ -6,6 +6,9 @@ This is a comprehensive social media API built with **Node.js**, **Express**, an
 
 - [Installation](#installation)
 - [Usage](#usage)
+- [Database Diagram](#database-diagram)
+- [Features](#features)
+- [Technologies](#technologies)
 - [API Endpoints](#api-endpoints)
 - [Authentication and Authorization](#authentication-and-authorization)
 - [Environment Variables](#environment-variables)
@@ -44,6 +47,33 @@ This is a comprehensive social media API built with **Node.js**, **Express**, an
 Here is an overview of the database schema used in this API:
 
 ![Database Diagram](./assets/db-diagram.png)
+
+## Features
+
+- User authentication (JWT + Google OAuth + 2FA)
+- User profile management
+- Create, update, delete posts
+- Like/unlike posts
+- Add/delete comments (nested comments)
+- Group system:
+  - Create and manage groups
+  - Join requests & approvals
+  - Post inside groups (pending approval from admins)
+  - Group admin roles and permissions
+
+## Technologies
+
+- Node.js
+- Express.js
+- PostgreSQL (Prisma)
+- Passport.js (Google OAuth)
+- qrcode
+- express-session
+- JWT (JSON Web Tokens)
+- nodemailer
+- bcryptjs
+- winston (logging)
+- class-validator
 
 ## API Endpoints
 
