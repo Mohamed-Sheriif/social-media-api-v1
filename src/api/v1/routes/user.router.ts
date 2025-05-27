@@ -227,11 +227,11 @@ export function UserRoute(prisma: PrismaClient): Router {
 
   /**
    * @desc    Login with 2FA
-   * @route   POST /api/v1/user/login/2fa
+   * @route   POST /api/v1/user/2fa/login
    * @access  Public
    */
   router.post(
-    '/login/2fa',
+    '/2fa/login',
     asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
       const { tempToken, totp } = req.body;
 

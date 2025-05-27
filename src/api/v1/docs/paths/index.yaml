@@ -42,7 +42,7 @@
 /user/2fa/verify:
   post:
     $ref: './user/user-verify-twoFA.yaml'
-/user/login/2fa:
+/user/2fa/login:
   post:
     $ref: './user/user-login-twoFA.yaml'
 /user/logout:
