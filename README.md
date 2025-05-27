@@ -200,18 +200,6 @@ This authentication system provides secure login with JWT, supports Google OAuth
 Create a `.env` file in the root directory with the following variables:
 
 ```env
-PORT=8000
-NODE_ENV=production
-DATABASE=mongodb+srv://<username>:<password>@cluster0.mongodb.net/ecommerce
-JWT_SECRET=your_jwt_secret
-JWT_EXPIRES_IN=90d
-EMAIL_HOST=smtp.mailtrap.io
-EMAIL_PORT=2525
-EMAIL_USER=your_email_user
-EMAIL_PASS=your_email_password
-STRIPE_SECRET_KEY=your_stripe_secret_key
-```
-
 DATABASE_URL=DATABASE_URL
 JWT_SECRET=your_jwt_secret
 CACHE_SECRET=your_cache_secret
@@ -225,6 +213,7 @@ EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=465
 EMAIL_USERNAME=your_email_user
 EMAIL_PASSWORD=your_email_password
+```
 
 ## License
 
