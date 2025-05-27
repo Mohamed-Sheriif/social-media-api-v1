@@ -39,6 +39,12 @@ This is a comprehensive social media API built with **Node.js**, **Express**, an
 - The API will run on `http://localhost:3000` by default.
 - Use tools like **Postman** or **Insomnia** to interact with the API endpoints.
 
+## Database Diagram
+
+Here is an overview of the database schema used in this API:
+
+![Database Diagram](./assets/db-diagram.png)
+
 ## API Endpoints
 
 ### **Users**
