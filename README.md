@@ -6,6 +6,7 @@ This is a comprehensive social media API built with **Node.js**, **Express**, an
 
 - [Installation](#installation)
 - [Usage](#usage)
+- [Docker Setup](#docker-setup)
 - [Database Diagram](#database-diagram)
 - [Features](#features)
 - [Technologies](#technologies)
@@ -41,6 +42,29 @@ This is a comprehensive social media API built with **Node.js**, **Express**, an
 
 - The API will run on `http://localhost:3000` by default.
 - Use tools like **Postman** or **Insomnia** to interact with the API endpoints.
+
+## Docker Setup
+
+You can run the entire stack (API + PostgreSQL) using Docker and Docker Compose.
+
+1. Copy the example environment file and edit as needed:
+
+   ```sh
+   cp .env.example .env
+   # Edit .env to set your secrets and credentials
+   ```
+
+2. Build and start the containers:
+
+   ```sh
+   docker-compose up --build
+   ```
+
+3. The API will be available at http://localhost:3000
+4. To stop the containers:
+   ```sh
+   docker-compose down
+   ```
 
 ## Database Diagram
 
@@ -236,7 +260,7 @@ This authentication system provides secure login with JWT, supports Google OAuth
 Create a `.env` file in the root directory with the following variables:
 
 ```env
-DATABASE_URL=DATABASE_URL
+DATABASE_URL=postgres://postgres:postgres@db:5432/socialmedia
 JWT_SECRET=your_jwt_secret
 CACHE_SECRET=your_cache_secret
 CACHE_EXPIREIN="1m"
